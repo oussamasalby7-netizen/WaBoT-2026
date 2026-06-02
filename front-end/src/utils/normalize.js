@@ -31,6 +31,7 @@ export const normalizeProduct = (product) => ({
   name: product.name || "Unnamed Product",
   price: parseFloat(product.price || 0),
   description: product.description || "",
+  aiQuestions: product.ai_questions || product.aiQuestions || "",
   stock: product.stock || 0,
   imageUrl: product.image_url,
   createdAt: product.created_at,

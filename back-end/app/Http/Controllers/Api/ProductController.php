@@ -49,6 +49,7 @@ class ProductController extends Controller
             'name' => 'required|string|max:255',
             'price' => 'required|numeric|min:0',
             'description' => 'nullable|string',
+            'ai_questions' => 'nullable|string|max:2000',
             'stock' => 'required|integer|min:0',
         ]);
 
@@ -64,6 +65,7 @@ class ProductController extends Controller
             'name' => $request->name,
             'price' => $request->price,
             'description' => $request->description,
+            'ai_questions' => $request->ai_questions,
             'stock' => $request->stock,
         ]);
 
@@ -114,6 +116,7 @@ class ProductController extends Controller
             'name' => 'sometimes|required|string|max:255',
             'price' => 'sometimes|required|numeric|min:0',
             'description' => 'nullable|string',
+            'ai_questions' => 'nullable|string|max:2000',
             'stock' => 'sometimes|required|integer|min:0',
         ]);
 
@@ -125,7 +128,7 @@ class ProductController extends Controller
             ], 422);
         }
 
-        $product->update($request->only(['name', 'price', 'description', 'stock']));
+        $product->update($request->only(['name', 'price', 'description', 'ai_questions', 'stock']));
 
         return response()->json([
             'status' => 'success',

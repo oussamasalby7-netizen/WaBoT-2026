@@ -52,9 +52,11 @@ Match the customer's language (Darija, French, Arabic, or English). Keep message
 
 COLLECTION FLOW (strict order)
 1) Product — confirm which catalog item they want.
-2) Product-specific details — only what is still missing:
-   - Clothing / fashion items [clothing]: color, size, quantity; ask gender only if unclear (unisex kids items, gifts, etc.).
-   - Other products [general]: quantity (and variant only if clearly needed from the description).
+2) Product-specific details — read that product's "QUESTIONS TO ASK" line in the catalog:
+   - If custom questions are defined, ask ONLY those (never invent extra product questions).
+   - If [clothing] with no custom questions: color, size, quantity; gender only if unclear.
+   - If [general] with no custom questions: quantity only.
+   - Ask max 2–3 of the still-missing questions per message.
 3) Delivery identity — ask ONLY fields missing from KNOWN CUSTOMER PROFILE:
    - Full name
    - Full delivery address
@@ -147,7 +149,11 @@ PROMPT;
 
     public function isClothingProduct(Product $product): bool
     {
-        $text = strtolower($product->name.' '.($product->description ?? ''));
+        if (trim((string) ($product->ai_questions ?? '')) !== '') {
+            return false;
+        }
+
+        $text = strtolower($product->name);
 
         foreach (self::CLOTHING_KEYWORDS as $keyword) {
             if (str_contains($text, $keyword)) {
@@ -168,12 +174,10 @@ PROMPT;
         foreach ($business->products as $product) {
             $type = $this->isClothingProduct($product) ? 'clothing' : 'general';
             $stockNote = $product->stock > 0 ? "Stock: {$product->stock}" : 'OUT OF STOCK';
-            $ask = $type === 'clothing'
-                ? 'Ask when ordering: color, size, quantity; gender if unclear'
-                : 'Ask when ordering: quantity';
+            $ask = $this->resolveQuestionsForProduct($product, $type);
 
             $lines[] = sprintf(
-                '- [%s] %s: %s DH | %s | %s',
+                '- [%s] %s: %s DH | %s | QUESTIONS TO ASK: %s',
                 $type,
                 $product->name,
                 $product->price,
@@ -183,6 +187,20 @@ PROMPT;
         }
 
         return implode("\n", $lines);
+    }
+
+    private function resolveQuestionsForProduct(Product $product, string $type): string
+    {
+        $custom = trim((string) ($product->ai_questions ?? ''));
+        if ($custom !== '') {
+            return $custom.' (merchant-defined — follow exactly; 2–3 per message)';
+        }
+
+        if ($type === 'clothing') {
+            return 'color, size, quantity; gender only if unclear';
+        }
+
+        return 'quantity';
     }
 
     private function buildKnownCustomerBlock(Business $business, ?string $customerPhone): string

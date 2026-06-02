@@ -11,7 +11,7 @@ import Input from "../components/ui/Input";
 import { useI18n } from "../context/I18nContext.jsx";
 import "../styles/products.css";
 
-const emptyProductForm = { name: "", description: "", price: "", stock: "" };
+const emptyProductForm = { name: "", aiQuestions: "", price: "", stock: "" };
 
 export default function Products() {
   const { t } = useI18n();
@@ -34,7 +34,12 @@ export default function Products() {
   const openEditDialog = (product) =>
     setProductDialog({
       open: true, mode: "edit", productId: product.id,
-      form: { name: product.name, description: product.description, price: String(product.price), stock: String(product.stock) },
+      form: {
+        name: product.name,
+        aiQuestions: product.aiQuestions || "",
+        price: String(product.price),
+        stock: String(product.stock),
+      },
     });
 
   const closeProductDialog = () =>
@@ -49,7 +54,12 @@ export default function Products() {
     if (!form.name.trim()) return toast.error(t("products.nameRequired"));
     if (form.price === "" || Number(form.price) < 0) return toast.error(t("products.priceRequired"));
     if (form.stock === "" || Number(form.stock) < 0) return toast.error(t("products.stockRequired"));
-    const payload = { name: form.name.trim(), description: form.description.trim(), price: Number(form.price), stock: Number(form.stock) };
+    const payload = {
+      name: form.name.trim(),
+      ai_questions: form.aiQuestions.trim(),
+      price: Number(form.price),
+      stock: Number(form.stock),
+    };
     try {
       if (productDialog.mode === "edit") {
         await updateProduct({ id: productDialog.productId, data: payload });
@@ -182,7 +192,9 @@ export default function Products() {
                     </button>
                   </div>
                   <p className="product-description">
-                    {product.description || "No description provided."}
+                    {product.aiQuestions
+                      ? product.aiQuestions
+                      : t("products.noAiQuestions")}
                   </p>
                   <div className="product-price-row">
                     <span className="product-price">${product.price.toFixed(2)}</span>
@@ -237,11 +249,17 @@ export default function Products() {
                   onChange={(e) => updateProductForm("name", e.target.value)}
                   required
                 />
-                <Input
-                  label={t("settings.description")}
-                  value={productDialog.form.description}
-                  onChange={(e) => updateProductForm("description", e.target.value)}
-                />
+                <div className="input-wrapper">
+                  <label className="input-label">{t("products.aiQuestionsLabel")}</label>
+                  <textarea
+                    className="input-field product-ai-questions"
+                    rows={4}
+                    value={productDialog.form.aiQuestions}
+                    onChange={(e) => updateProductForm("aiQuestions", e.target.value)}
+                    placeholder={t("products.aiQuestionsPlaceholder")}
+                  />
+                  <span className="input-hint">{t("products.aiQuestionsHint")}</span>
+                </div>
                 <div className="product-form-row">
                   <Input
                     label={t("products.priceLabel")}

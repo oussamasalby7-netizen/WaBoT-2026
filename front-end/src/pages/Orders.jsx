@@ -4,7 +4,7 @@ import { Table, THead, TBody, TH, TR, TD } from "../components/ui/Table";
 import Badge from "../components/ui/Badge";
 import Skeleton from "../components/ui/Skeleton";
 import Dialog from "../components/ui/Dialog";
-import { MoreHorizontal, Search, Filter, CheckCircle2, Clock, XCircle, ShoppingBag } from "lucide-react";
+import { Search, Filter, CheckCircle2, Clock, XCircle, ShoppingBag } from "lucide-react";
 import { useI18n } from "../context/I18nContext.jsx";
 
 
@@ -145,13 +145,6 @@ export default function Orders() {
                         <option value="completed">{t("orders.statusCompleted")}</option>
                         <option value="cancelled">{t("orders.statusCancelled")}</option>
                       </select>
-                      <button
-                        type="button"
-                        className="topbar-action-btn"
-                        style={{ width: "32px", height: "32px" }}
-                      >
-                        <MoreHorizontal size={16} />
-                      </button>
                     </div>
                   </TD>
                 </TR>
