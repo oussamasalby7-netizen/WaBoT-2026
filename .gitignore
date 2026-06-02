@@ -4,9 +4,10 @@ back-end/vendor/
 
 # Environment & secrets (never commit)
 **/.env
+**/.env.*
+!**/.env.example
 **/.env.backup
 **/.env.production
-!**/.env.example
 
 # Build artifacts
 front-end/dist/
