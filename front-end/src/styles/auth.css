@@ -1,0 +1,493 @@
+/* auth.css - Styling for Login and Register pages */
+
+.auth-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--bg-main);
+  padding: 24px;
+  position: relative;
+  overflow: hidden;
+  color: var(--text-main);
+}
+
+.auth-container {
+  width: 100%;
+  max-width: 440px;
+  z-index: 10;
+}
+
+.auth-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.auth-logo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
+  background-color: var(--primary);
+  margin-bottom: 16px;
+  box-shadow: var(--shadow-glow);
+  color: #000;
+  font-weight: 800;
+  font-size: 32px;
+}
+
+.auth-title {
+  font-family: var(--font-display);
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 8px;
+}
+
+.auth-subtitle {
+  color: var(--text-muted);
+  font-size: 16px;
+}
+
+.auth-card {
+  background-color: var(--bg-card);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--border-color);
+  border-radius: 24px;
+  padding: 32px;
+  position: relative;
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+}
+
+.auth-card-bg {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at top right, rgba(255, 255, 255, 0.05), transparent 60%);
+  opacity: 0;
+  transition: opacity var(--transition-normal);
+  pointer-events: none;
+}
+.auth-card:hover .auth-card-bg {
+  opacity: 1;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  position: relative;
+  z-index: 2;
+}
+
+.auth-footer {
+  text-align: center;
+  margin-top: 32px;
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+.auth-link {
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 500;
+  transition: text-decoration var(--transition-fast);
+}
+
+.auth-link:hover {
+  text-decoration: underline;
+}
+
+/* Background aesthetic elements */
+.auth-bg-blob {
+  position: absolute;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, var(--primary-muted) 0%, transparent 60%);
+  filter: blur(80px);
+  z-index: 0;
+  opacity: 0.5;
+  pointer-events: none;
+}
+.auth-bg-blob.top-left {
+  top: -200px;
+  left: -200px;
+}
+.auth-bg-blob.bottom-right {
+  bottom: -200px;
+  right: -200px;
+}
+
+/* Auth Shell Controls */
+.auth-controls {
+  position: absolute;
+  top: 16px;
+  inset-inline-end: 16px;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.auth-controls .language-selector,
+.auth-controls .theme-toggle {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+}
+
+.auth-controls .language-selector {
+  padding: 4px 8px;
+  gap: 4px;
+}
+
+.auth-controls .language-selector select {
+  background: transparent;
+  border: none;
+  color: var(--text-main);
+  font-size: 12px;
+  outline: none;
+  cursor: pointer;
+}
+
+.auth-controls .theme-toggle {
+  padding: 8px;
+  color: var(--text-main);
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+
+.auth-controls .theme-toggle:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* ============================================================
+   BILLING REQUIRED PAGE
+   ============================================================ */
+.billing-container {
+  text-align: center;
+}
+
+.billing-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  border-radius: var(--radius-lg);
+  background-color: var(--primary-muted);
+  color: var(--primary);
+  margin-bottom: var(--space-5);
+}
+
+.billing-title {
+  font-family: var(--font-display);
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: var(--space-2);
+}
+
+.billing-subtitle {
+  color: var(--text-muted);
+  font-size: 14px;
+  line-height: 1.6;
+  margin-bottom: var(--space-6);
+}
+
+.billing-status-card {
+  background-color: var(--bg-elevated);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  text-align: left;
+  margin-bottom: var(--space-4);
+  font-size: 14px;
+}
+
+.billing-status-label {
+  color: var(--text-muted);
+}
+
+.billing-status-value {
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.billing-warning {
+  color: var(--warning);
+  margin-top: var(--space-1);
+  font-size: 13px;
+}
+
+.billing-hint {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: var(--space-6);
+}
+
+/* ── WhatsApp CTA button ───────────────────────────────────── */
+.btn-whatsapp {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 13px 24px;
+  border-radius: var(--radius-md);
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: none;
+  color: #fff;
+  background-color: #25D366;
+  border: none;
+  cursor: pointer;
+  transition: background-color var(--transition-fast), transform var(--transition-fast),
+    box-shadow var(--transition-fast);
+  box-shadow: 0 4px 20px rgba(37, 211, 102, 0.35);
+}
+
+.btn-whatsapp:hover {
+  background-color: #1ebe5d;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 28px rgba(37, 211, 102, 0.5);
+}
+
+.btn-whatsapp:active {
+  transform: translateY(0);
+}
+
+/* Subtle pulse to draw attention on first render */
+@keyframes wa-pulse {
+  0%, 100% { box-shadow: 0 4px 20px rgba(37, 211, 102, 0.35); }
+  50%       { box-shadow: 0 4px 32px rgba(37, 211, 102, 0.65); }
+}
+.billing-upgrade-btn.btn-whatsapp {
+  animation: wa-pulse 2.4s ease-in-out 0.6s 3;
+}
+
+.billing-whatsapp-hint {
+  font-size: 12px;
+  color: var(--text-muted);
+  text-align: center;
+  margin-top: var(--space-3);
+  margin-bottom: var(--space-4);
+  line-height: 1.5;
+}
+
+.billing-actions {
+  display: flex;
+  gap: var(--space-3);
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* ============================================================
+   FORGOT PASSWORD — success & back-link
+   ============================================================ */
+.fp-success {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--space-4);
+  padding: var(--space-4) 0;
+}
+
+.fp-success-icon {
+  width: 72px;
+  height: 72px;
+  border-radius: var(--radius-full);
+  background-color: var(--success-muted);
+  color: var(--success);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.fp-success-text {
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 1.7;
+  max-width: 340px;
+}
+
+.fp-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: 14px;
+}
+
+/* Forgot password link inside the login form */
+.forgot-password-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: var(--space-1);
+}
+
+.forgot-password-link {
+  font-size: 13px;
+}
+
+/* ============================================================
+   RESET PASSWORD — invalid token / error state
+   ============================================================ */
+.rp-error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--space-4);
+  padding: var(--space-4) 0;
+}
+
+.rp-error-icon {
+  color: var(--danger);
+  width: 40px;
+  height: 40px;
+}
+
+.rp-error-text {
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 1.7;
+  max-width: 320px;
+}
+
+.rp-retry-btn {
+  text-decoration: none;
+  border-radius: var(--radius-sm);
+  padding: 10px 24px;
+  font-size: 14px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--primary);
+  color: #000;
+  transition: background-color var(--transition-fast), transform var(--transition-fast);
+}
+.rp-retry-btn:hover {
+  background-color: var(--primary-hover);
+  transform: translateY(-1px);
+}
+
+/* ============================================================
+   OTP DIGIT INPUT GRID
+   ============================================================ */
+.otp-inputs-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.otp-inputs {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+}
+
+.otp-digit-input {
+  width: 52px;
+  height: 60px;
+  text-align: center;
+  font-size: 26px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  font-family: var(--font-display);
+  background-color: var(--bg-elevated);
+  border: 2px solid var(--border-color);
+  border-radius: var(--radius-md);
+  color: var(--text-main);
+  outline: none;
+  caret-color: var(--primary);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast),
+    background-color var(--transition-fast);
+}
+
+.otp-digit-input:focus {
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 4px rgba(0, 255, 136, 0.1);
+  background-color: var(--bg-card);
+}
+
+.otp-digit-input.filled {
+  border-color: rgba(0, 255, 136, 0.35);
+  color: var(--primary);
+}
+
+.otp-digit-input.error {
+  border-color: var(--danger);
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+html.light .otp-digit-input { background-color: #ffffff; }
+html.light .otp-digit-input:focus { background-color: #ffffff; }
+
+.otp-error-text {
+  font-size: 13px;
+  color: var(--danger);
+  text-align: center;
+  line-height: 1.5;
+}
+
+.otp-attempts {
+  font-weight: 600;
+  margin-left: 4px;
+}
+
+/* Resend code button */
+.otp-resend-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  width: 100%;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-muted);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: var(--space-2);
+  border-radius: var(--radius-sm);
+  transition: color var(--transition-fast), background-color var(--transition-fast);
+  margin-top: var(--space-1);
+}
+
+.otp-resend-btn:hover:not(:disabled) {
+  color: var(--text-main);
+  background-color: var(--bg-elevated);
+}
+
+.otp-resend-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.otp-resend-icon {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+
+/* Responsive: smaller screens → smaller OTP boxes */
+@media (max-width: 400px) {
+  .otp-digit-input {
+    width: 42px;
+    height: 52px;
+    font-size: 22px;
+  }
+  .otp-inputs { gap: var(--space-2); }
+}

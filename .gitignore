@@ -1,0 +1,44 @@
+# Dependencies
+**/node_modules/
+back-end/vendor/
+
+# Environment & secrets (never commit)
+**/.env
+**/.env.backup
+**/.env.production
+!**/.env.example
+
+# Build artifacts
+front-end/dist/
+back-end/public/build/
+back-end/public/hot/
+
+# Runtime / local data
+whatsapp-service/sessions/
+whatsapp-service/logs/
+back-end/storage/logs/*.log
+!back-end/storage/logs/.gitignore
+
+# TestSprite (dev-only, may contain API keys)
+**/.testsprite/
+**/testsprite_tests/
+**/.phpunit.result.cache
+back-end/.env.testing
+
+# IDE & OS
+.idea/
+.vscode/
+.fleet/
+.DS_Store
+Thumbs.db
+*.sw?
+
+# PHP / Laravel cache
+**/.phpunit.cache
+back-end/bootstrap/cache/*.php
+!back-end/bootstrap/cache/.gitignore
+
+# Misc logs
+*.log
+npm-debug.log*
+yarn-error.log*

@@ -1,0 +1,338 @@
+/* ============================================================
+   LAYOUT.CSS — Sidebar, Topbar, Main Content
+   ============================================================ */
+
+.dashboard-layout {
+  display: flex;
+  min-height: 100vh;
+  background-color: var(--bg-main);
+}
+
+/* SIDEBAR */
+.sidebar {
+  width: var(--sidebar-width);
+  height: 100vh;
+  background-color: var(--bg-card);
+  border-right: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0; left: 0; bottom: 0;
+  z-index: 40;
+  transition: transform var(--transition-normal);
+}
+[dir="rtl"] .sidebar {
+  left: auto; right: 0;
+  border-right: none;
+  border-left: 1px solid var(--border-color);
+}
+
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-6);
+  border-bottom: 1px solid var(--border-color);
+  flex-shrink: 0;
+}
+
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.sidebar-logo {
+  width: 36px; height: 36px;
+  background-color: var(--primary);
+  color: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.sidebar-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--text-main);
+}
+
+.mobile-menu-btn {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 36px; height: 36px;
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  transition: background-color var(--transition-fast), color var(--transition-fast);
+}
+.mobile-menu-btn:hover {
+  background-color: var(--bg-elevated);
+  color: var(--text-main);
+}
+
+.sidebar-nav {
+  flex: 1;
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  overflow-y: auto;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  color: var(--text-muted);
+  font-weight: 500;
+  font-size: 14px;
+  transition: background-color var(--transition-fast), color var(--transition-fast);
+  white-space: nowrap;
+}
+.nav-item:hover { background-color: var(--bg-elevated); color: var(--text-main); }
+.nav-item.active { 
+  background-color: var(--primary-muted); 
+  color: var(--primary);
+  box-shadow: inset 0 0 0 1px rgba(0, 255, 136, 0.1);
+}
+
+.nav-item.active::before {
+  content: "";
+  position: absolute;
+  left: 0; top: 12px; bottom: 12px;
+  width: 3px;
+  background-color: var(--primary);
+  border-radius: 0 4px 4px 0;
+}
+
+[dir="rtl"] .nav-item.active::before {
+  left: auto; right: 0;
+  border-radius: 4px 0 0 4px;
+}
+
+.nav-icon {
+  width: 20px; height: 20px;
+  flex-shrink: 0;
+  transition: transform var(--transition-fast);
+}
+.nav-item:hover .nav-icon { transform: scale(1.1); }
+
+.sidebar-footer {
+  padding: var(--space-4);
+  border-top: 1px solid var(--border-color);
+  flex-shrink: 0;
+}
+
+.logout-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  color: var(--text-muted);
+  font-weight: 500;
+  font-size: 14px;
+  transition: background-color var(--transition-fast), color var(--transition-fast);
+}
+.logout-btn:hover { background-color: var(--danger-muted); color: var(--danger); }
+
+.sidebar-overlay {
+  position: fixed; inset: 0;
+  background-color: var(--bg-overlay);
+  backdrop-filter: blur(4px);
+  z-index: 30;
+}
+
+/* MAIN WRAPPER */
+.main-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  margin-left: var(--sidebar-width);
+  min-width: 0;
+}
+[dir="rtl"] .main-wrapper { margin-left: 0; margin-right: var(--sidebar-width); }
+
+/* TOPBAR */
+.topbar {
+  position: sticky;
+  top: 0; z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 68px;
+  padding: 0 var(--space-6);
+  background-color: var(--bg-card);
+  border-bottom: 1px solid var(--border-color);
+  gap: var(--space-4);
+  flex-shrink: 0;
+}
+
+.topbar-left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  min-width: 0; flex: 1;
+}
+
+.topbar-title {
+  font-size: 17px; font-weight: 600;
+  color: var(--text-main);
+  white-space: nowrap;
+  overflow: hidden; text-overflow: ellipsis;
+}
+.topbar-title .highlight { color: var(--primary); }
+.topbar-title .subtitle {
+  color: var(--text-muted);
+  font-weight: 400; font-size: 13px;
+  margin-left: var(--space-2);
+}
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-shrink: 0;
+}
+
+.topbar-action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px; height: 38px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-elevated);
+  color: var(--text-muted);
+  transition: all var(--transition-fast);
+  flex-shrink: 0;
+}
+.topbar-action-btn:hover {
+  border-color: var(--border-hover);
+  color: var(--text-main);
+}
+
+.language-selector {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-elevated);
+  padding: 0 var(--space-3);
+  height: 38px;
+  color: var(--text-muted);
+  transition: border-color var(--transition-fast), background-color var(--transition-fast);
+}
+.language-selector:hover {
+  border-color: var(--border-hover);
+}
+.language-selector select {
+  background-color: var(--bg-elevated); /* Explicit background to avoid transparent artifacts */
+  border: none;
+  outline: none;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  color: var(--text-main);
+}
+.language-selector select option {
+  background-color: var(--bg-card-solid); /* Explicit option background */
+  color: var(--text-main);
+}
+
+.user-profile {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding-left: var(--space-4);
+  border-left: 1px solid var(--border-color);
+}
+[dir="rtl"] .user-profile {
+  padding-left: 0; padding-right: var(--space-4);
+  border-left: none; border-right: 1px solid var(--border-color);
+}
+
+.user-info { text-align: right; }
+[dir="rtl"] .user-info { text-align: left; }
+
+.user-name { font-size: 13px; font-weight: 600; color: var(--text-main); white-space: nowrap; }
+.user-role {
+  font-size: 12px; color: var(--text-muted);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px;
+}
+
+.user-avatar {
+  width: 38px; height: 38px;
+  border-radius: var(--radius-full);
+  background-color: var(--bg-elevated);
+  border: 1px solid var(--border-color);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text-muted); flex-shrink: 0;
+}
+
+/* MAIN CONTENT */
+.main-content {
+  flex: 1;
+  padding: var(--space-8);
+  width: 100%; max-width: 1400px; margin: 0 auto;
+}
+
+/* RESPONSIVE */
+@media (max-width: 1024px) {
+  .sidebar { transform: translateX(-100%); }
+  [dir="rtl"] .sidebar { transform: translateX(100%); }
+  .main-wrapper { margin-left: 0; }
+  [dir="rtl"] .main-wrapper { margin-right: 0; }
+  .mobile-menu-btn { display: flex; }
+}
+@media (max-width: 768px) {
+  .topbar { padding: 0 var(--space-4); height: 60px; }
+  .user-info { display: none; }
+  .main-content { padding: var(--space-5); }
+}
+@media (max-width: 480px) {
+  .topbar-right .language-selector { display: none; }
+  .user-profile { padding-left: var(--space-3); border: none; }
+}
+
+/* ============================================================
+   SIDEBAR DESKTOP / MOBILE WRAPPERS
+   Pure-CSS replacement for Tailwind's "hidden lg:block" pattern
+   ============================================================ */
+
+/* Desktop: always visible, takes up no extra space (sidebar is position:fixed) */
+.sidebar-desktop-wrapper {
+  display: block;
+}
+
+/* Mobile: hidden by default — shown only via AnimatePresence overlay */
+.sidebar-mobile-wrapper {
+  display: block;
+}
+
+@media (max-width: 1023px) {
+  /* On mobile, desktop wrapper is hidden (sidebar opened via overlay) */
+  .sidebar-desktop-wrapper {
+    display: none;
+  }
+}
+
+@media (min-width: 1024px) {
+  /* On desktop, mobile overlay wrapper is never shown */
+  .sidebar-mobile-wrapper {
+    display: none;
+  }
+}
+

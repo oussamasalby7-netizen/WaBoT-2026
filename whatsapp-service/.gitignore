@@ -1,0 +1,8 @@
+node_modules/
+sessions/
+logs/
+.env
+*.log
+
+testsprite_tests/tmp/
+testsprite_tests/tmp/config.json

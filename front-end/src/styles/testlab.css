@@ -1,0 +1,287 @@
+/* ============================================================
+   TESTLAB.CSS — AI Test Lab page
+   ============================================================ */
+
+.testlab-page {
+  max-width: 1024px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  padding-bottom: var(--space-10);
+}
+
+/* Page header */
+.testlab-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.testlab-header-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-md);
+  background-color: var(--primary-muted);
+  border: 1px solid rgba(0, 255, 136, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary);
+  flex-shrink: 0;
+}
+
+.testlab-title {
+  font-family: var(--font-display);
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--text-main);
+  letter-spacing: -0.3px;
+}
+
+.testlab-subtitle {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-top: 3px;
+  line-height: 1.5;
+}
+
+/* Two-column grid */
+.testlab-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-5);
+  align-items: start;
+}
+
+/* Panel card */
+.testlab-panel {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-xl);
+  padding: var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.testlab-panel-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.testlab-panel-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+/* Prompt textarea wrapper */
+.testlab-prompt-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-muted);
+  margin-bottom: var(--space-2);
+  display: block;
+}
+
+.testlab-textarea {
+  width: 100%;
+  background-color: var(--bg-elevated);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: var(--space-3) var(--space-4);
+  font-size: 13px;
+  color: var(--text-main);
+  outline: none;
+  resize: vertical;
+  font-family: var(--font-sans);
+  transition: border-color var(--transition-fast);
+  line-height: 1.6;
+  box-sizing: border-box;
+}
+.testlab-textarea::placeholder { color: var(--text-muted); opacity: 0.7; }
+.testlab-textarea:focus { border-color: var(--border-focus); }
+
+/* AI Response area */
+.testlab-response-area {
+  background-color: var(--bg-elevated);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  min-height: 120px;
+}
+
+.testlab-response-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: var(--space-2);
+}
+
+.testlab-response-text {
+  font-size: 14px;
+  color: var(--text-main);
+  white-space: pre-wrap;
+  line-height: 1.6;
+}
+
+/* Chat panel (right column) */
+.testlab-chat-panel {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-xl);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  height: 600px;
+}
+
+.testlab-chat-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-5);
+  border-bottom: 1px solid var(--border-color);
+  background-color: var(--bg-elevated);
+  flex-shrink: 0;
+}
+
+.testlab-chat-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-full);
+  background-color: var(--primary-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary);
+  flex-shrink: 0;
+}
+
+.testlab-chat-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.testlab-chat-sub {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 1px;
+}
+
+/* Chat messages scroll area */
+.testlab-chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  background-color: var(--bg-main);
+}
+
+/* Message bubbles */
+.testlab-message {
+  display: flex;
+}
+.testlab-message.user   { justify-content: flex-end; }
+.testlab-message.bot    { justify-content: flex-start; }
+
+.testlab-bubble {
+  max-width: 85%;
+  border-radius: var(--radius-lg);
+  padding: 10px var(--space-4);
+  font-size: 14px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.testlab-bubble.user {
+  background-color: var(--primary);
+  color: #000;
+  font-weight: 500;
+  border-top-right-radius: 4px;
+}
+
+.testlab-bubble.bot {
+  background-color: var(--bg-elevated);
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+  border-top-left-radius: 4px;
+}
+
+/* Typing dots */
+.testlab-typing-dots {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 0;
+}
+
+.testlab-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: var(--radius-full);
+  background-color: var(--text-muted);
+  animation: bounce-dot 1.2s infinite;
+}
+.testlab-dot:nth-child(2) { animation-delay: 0.2s; }
+.testlab-dot:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes bounce-dot {
+  0%, 80%, 100% { transform: translateY(0); }
+  40%           { transform: translateY(-6px); }
+}
+
+/* Chat input row */
+.testlab-chat-input-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-4) var(--space-5);
+  border-top: 1px solid var(--border-color);
+  background-color: var(--bg-elevated);
+  flex-shrink: 0;
+}
+
+.testlab-chat-input {
+  flex: 1;
+  background-color: var(--bg-main);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-full);
+  padding: 8px var(--space-4);
+  font-size: 14px;
+  color: var(--text-main);
+  outline: none;
+  transition: border-color var(--transition-fast);
+  font-family: var(--font-sans);
+}
+.testlab-chat-input::placeholder { color: var(--text-muted); opacity: 0.7; }
+.testlab-chat-input:focus { border-color: var(--border-focus); }
+.testlab-chat-input:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.testlab-send-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .testlab-grid {
+    grid-template-columns: 1fr;
+  }
+  .testlab-chat-panel {
+    height: 500px;
+  }
+}

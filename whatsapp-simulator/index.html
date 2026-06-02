@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WhatsApp Webhook Simulator</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: #e5ddd5; margin: 0; display: flex; justify-content: center; align-items: center; height: 100vh; }
+        .chat-container { width: 100%; max-width: 400px; height: 80vh; background: #efeae2; box-shadow: 0 4px 12px rgba(0,0,0,0.1); display: flex; flex-direction: column; border-radius: 12px; overflow: hidden; }
+        .header { background: #075e54; color: white; padding: 15px; text-align: center; font-weight: bold; }
+        .settings { padding: 10px; background: #fff; border-bottom: 1px solid #ddd; font-size: 12px; display: flex; flex-direction: column; gap: 5px; }
+        .settings input { padding: 5px; border: 1px solid #ddd; border-radius: 4px; }
+        .chat-box { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+        .message { padding: 8px 12px; border-radius: 8px; max-width: 80%; word-wrap: break-word; font-size: 14px; position: relative; }
+        .message.sent { background: #dcf8c6; align-self: flex-end; border-top-right-radius: 0; }
+        .message.received { background: #fff; align-self: flex-start; border-top-left-radius: 0; box-shadow: 0 1px 1px rgba(0,0,0,0.1); }
+        .input-box { display: flex; padding: 10px; background: #f0f0f0; }
+        .input-box input { flex: 1; padding: 10px; border: none; border-radius: 20px; outline: none; }
+        .input-box button { background: #075e54; color: white; border: none; border-radius: 50%; width: 40px; height: 40px; margin-left: 10px; cursor: pointer; display: flex; justify-content: center; align-items: center; }
+        .loading { font-size: 12px; color: #888; text-align: center; font-style: italic; display: none; }
+    </style>
+</head>
+<body>
+
+<div class="chat-container">
+    <div class="header">WhatsApp Sandbox (Local)</div>
+    
+    <div class="settings">
+        <label>Business Phone ID (from your DB): <input type="text" id="phoneId" value="99999"></label>
+        <label>Your Customer Phone #: <input type="text" id="customerPhone" value="212600000000"></label>
+    </div>
+
+    <div class="chat-box" id="chatBox">
+        <div class="message received">👋 Welcome to the local WhatsApp Sandbox. Messages sent here will hit your actual Laravel backend on port 8000.</div>
+    </div>
+    
+    <div class="loading" id="loadingIndicator">AI is typing...</div>
+
+    <form class="input-box" id="chatForm">
+        <input type="text" id="messageInput" placeholder="Type a message..." autocomplete="off" required>
+        <button type="submit">➤</button>
+    </form>
+</div>
+
+<script>
+    const chatBox = document.getElementById('chatBox');
+    const chatForm = document.getElementById('chatForm');
+    const messageInput = document.getElementById('messageInput');
+    const phoneIdInput = document.getElementById('phoneId');
+    const customerPhoneInput = document.getElementById('customerPhone');
+    const loadingIndicator = document.getElementById('loadingIndicator');
+
+    function appendMessage(text, type) {
+        const msgDiv = document.createElement('div');
+        msgDiv.className = `message ${type}`;
+        msgDiv.textContent = text;
+        chatBox.appendChild(msgDiv);
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    chatForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const messageText = messageInput.value.trim();
+        if (!messageText) return;
+
+        const phoneId = phoneIdInput.value.trim();
+        const customerPhone = customerPhoneInput.value.trim();
+
+        // 1. Show user message
+        appendMessage(messageText, 'sent');
+        messageInput.value = '';
+        loadingIndicator.style.display = 'block';
+
+        // 2. Prepare Meta Webhook Payload
+        const payload = {
+            object: "whatsapp_business_account",
+            entry: [{
+                id: "1234567890",
+                changes: [{
+                    value: {
+                        messaging_product: "whatsapp",
+                        metadata: {
+                            display_phone_number: "123456789",
+                            phone_number_id: phoneId
+                        },
+                        contacts: [{ profile: { name: "Test User" }, wa_id: customerPhone }],
+                        messages: [{
+                            from: customerPhone,
+                            id: "wamid." + Math.random().toString(36).substring(7),
+                            timestamp: Math.floor(Date.now() / 1000).toString(),
+                            text: { body: messageText },
+                            type: "text"
+                        }]
+                    },
+                    field: "messages"
+                }]
+            }]
+        };
+
+        try {
+            // 3. Send to Laravel Backend Webhook
+            const response = await fetch('http://localhost:8000/api/webhook/' + phoneId, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            });
+
+            const data = await response.json();
+            
+            loadingIndicator.style.display = 'none';
+
+            if (data.ai_reply) {
+                appendMessage(data.ai_reply, 'received');
+            } else if (data.status === 'ignored') {
+                appendMessage('⚠️ Message was ignored by backend.', 'received');
+            } else if (data.message) {
+                appendMessage('⚠️ Error: ' + data.message, 'received');
+            } else {
+                appendMessage('⚠️ No reply generated. Check backend logs.', 'received');
+            }
+            
+        } catch (error) {
+            loadingIndicator.style.display = 'none';
+            appendMessage('❌ Failed to connect to http://localhost:8000. Is the backend running?', 'received');
+            console.error(error);
+        }
+    });
+</script>
+
+</body>
+</html>
