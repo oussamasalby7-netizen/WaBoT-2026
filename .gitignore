@@ -34,6 +34,9 @@ back-end/.env.testing
 Thumbs.db
 *.sw?
 
+# Python virtualenv
+.venv/
+
 # PHP / Laravel cache
 **/.phpunit.cache
 back-end/bootstrap/cache/*.php
