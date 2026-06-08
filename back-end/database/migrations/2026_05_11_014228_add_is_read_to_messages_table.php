@@ -21,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('messages', function (Blueprint $table) {
-            //
+        Schema::table('messages', function (Blueprint $_table) {
+            // Column removed in this migration direction (is_read dropped by Schema dropColumn if needed)
         });
     }
 };

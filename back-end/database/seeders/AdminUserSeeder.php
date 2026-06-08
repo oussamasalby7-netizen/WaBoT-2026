@@ -14,11 +14,11 @@ class AdminUserSeeder extends Seeder
     public function run(): void
     {
         User::updateOrCreate(
-            ['email' => 'admin@example.com'],
+            ['email' => 'ejjoudmohamed0@gmail.com'],
             [
                 'name' => 'Administrator',
-                'email' => 'admin@example.com',
-                'password' => Hash::make('password123'),
+                'email' => 'ejjoudmohamed0@gmail.com',
+                'password' => Hash::make('Mohamed##EJJOUD1919'),
                 'role' => 'admin',
                 'subscription_status' => 'pro',
                 'subscription_plan' => 'pro',
@@ -29,7 +29,7 @@ class AdminUserSeeder extends Seeder
         );
 
         $this->command->info(' Admin user seeded successfully!');
-        $this->command->info(' Email: admin@example.com');
-        $this->command->info('Password: password123');
+        $this->command->info(' Email: ejjoudmohamed0@gmail.com');
+        $this->command->info('Password: [protected]');
     }
 }

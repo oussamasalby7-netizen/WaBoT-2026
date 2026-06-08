@@ -128,7 +128,7 @@ class AdminController extends Controller
         ]);
     }
 
-    public function toggleBlock(Request $request, $id)
+    public function toggleBlock($id)
     {
         $user = User::findOrFail($id);
 

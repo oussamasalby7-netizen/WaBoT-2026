@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Validator;
 
 class ProductController extends Controller
 {
+    private const ERR_NOT_FOUND = 'Product not found or access denied';
+
     /**
      * Display a listing of the user's products.
      */
@@ -87,7 +89,7 @@ class ProductController extends Controller
         if (!$product) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Product not found or access denied'
+                'message' => self::ERR_NOT_FOUND
             ], 404);
         }
 
@@ -108,7 +110,7 @@ class ProductController extends Controller
         if (!$product) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Product not found or access denied'
+                'message' => self::ERR_NOT_FOUND
             ], 404);
         }
 
@@ -148,7 +150,7 @@ class ProductController extends Controller
         if (!$product) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Product not found or access denied'
+                'message' => self::ERR_NOT_FOUND
             ], 404);
         }
 

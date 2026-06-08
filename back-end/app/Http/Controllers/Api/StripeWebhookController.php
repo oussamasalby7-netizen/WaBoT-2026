@@ -20,46 +20,38 @@ class StripeWebhookController extends Controller
         $secret = config('services.stripe.webhook_secret');
         if (empty($secret)) {
             Log::warning('Stripe webhook: STRIPE_WEBHOOK_SECRET is not set.');
-
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Webhook not configured',
-            ], 503);
+            return response()->json(['status' => 'error', 'message' => 'Webhook not configured'], 503);
         }
 
         $payload = $request->getContent();
         $sigHeader = (string) $request->header('Stripe-Signature', '');
+        $response = response()->json(['received' => true]);
 
         try {
             $this->assertValidStripeSignature($payload, $sigHeader, $secret);
-        } catch (\Throwable $e) {
+
+            $event = json_decode($payload, true);
+            if (! is_array($event) || empty($event['type'])) {
+                $response = response()->json(['status' => 'error', 'message' => 'Invalid payload'], 400);
+            } else {
+                match ($event['type']) {
+                    'checkout.session.completed' => $this->handleCheckoutSessionCompleted($event),
+                    'invoice.paid' => $this->handleInvoicePaid($event),
+                    'invoice.payment_failed' => $this->handleInvoicePaymentFailed($event),
+                    default => null,
+                };
+            }
+        } catch (\InvalidArgumentException $e) {
             Log::notice('Stripe webhook: invalid signature', ['message' => $e->getMessage()]);
-
-            return response()->json(['status' => 'error', 'message' => 'Invalid signature'], 400);
-        }
-
-        $event = json_decode($payload, true);
-        if (! is_array($event) || empty($event['type'])) {
-            return response()->json(['status' => 'error', 'message' => 'Invalid payload'], 400);
-        }
-
-        try {
-            match ($event['type']) {
-                'checkout.session.completed' => $this->handleCheckoutSessionCompleted($event),
-                'invoice.paid' => $this->handleInvoicePaid($event),
-                'invoice.payment_failed' => $this->handleInvoicePaymentFailed($event),
-                default => null,
-            };
+            $response = response()->json(['status' => 'error', 'message' => 'Invalid signature'], 400);
         } catch (\Throwable $e) {
             Log::error('Stripe webhook processing failed', [
-                'type' => $event['type'],
                 'message' => $e->getMessage(),
             ]);
-
-            return response()->json(['status' => 'error', 'message' => 'Processing failed'], 500);
+            $response = response()->json(['status' => 'error', 'message' => 'Processing failed'], 500);
         }
 
-        return response()->json(['received' => true]);
+        return $response;
     }
 
     private function handleCheckoutSessionCompleted(array $event): void
@@ -197,7 +189,7 @@ class StripeWebhookController extends Controller
     private function assertValidStripeSignature(string $payload, string $header, string $secret): void
     {
         if ($header === '') {
-            throw new \RuntimeException('Missing Stripe-Signature header');
+            throw new \InvalidArgumentException('Missing Stripe-Signature header');
         }
 
         $timestamp = null;
@@ -217,11 +209,11 @@ class StripeWebhookController extends Controller
         }
 
         if ($timestamp === null || $signatures === []) {
-            throw new \RuntimeException('Malformed Stripe-Signature header');
+            throw new \InvalidArgumentException('Malformed Stripe-Signature header');
         }
 
         if (abs(time() - (int) $timestamp) > 600) {
-            throw new \RuntimeException('Timestamp outside tolerance');
+            throw new \InvalidArgumentException('Timestamp outside tolerance');
         }
 
         $signedPayload = $timestamp.'.'.$payload;
@@ -233,6 +225,6 @@ class StripeWebhookController extends Controller
             }
         }
 
-        throw new \RuntimeException('No matching v1 signature');
+        throw new \InvalidArgumentException('No matching v1 signature');
     }
 }

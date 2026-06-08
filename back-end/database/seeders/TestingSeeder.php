@@ -21,11 +21,11 @@ class TestingSeeder extends Seeder
         // Use: php artisan migrate:fresh --seed --seeder=TestingSeeder --env=testing
 
         // Admin
-        $admin = User::updateOrCreate(
-            ['email' => 'admin@test.local'],
+        User::updateOrCreate(
+            ['email' => 'ejjoudmohamed0@gmail.com'],
             [
                 'name' => 'Test Admin',
-                'password' => bcrypt('password123'),
+                'password' => bcrypt('Mohamed##EJJOUD1919'),
                 'role' => 'admin',
                 'subscription_status' => 'pro',
                 'subscription_plan' => 'pro',
@@ -175,7 +175,7 @@ class TestingSeeder extends Seeder
         }
 
         $this->command?->info('✅ TestingSeeder complete (TEST database).');
-        $this->command?->info('Admin login: admin@test.local / password123');
+        $this->command?->info('Admin login: ejjoudmohamed0@gmail.com / [protected]');
     }
 }
 

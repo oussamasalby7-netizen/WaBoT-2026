@@ -25,9 +25,16 @@ class OrderDataNormalizer
         }
 
         $quantity = max(1, (int) ($orderData['quantity'] ?? 1));
+        $customerPhone = trim((string) ($orderData['customer_phone'] ?? ''));
+
+        if ($customerPhone === '') {
+            return null;
+        }
+
+        $defaultPrice = $product ? (float) $product->price * $quantity : 0.0;
         $totalPrice = isset($orderData['total_price'])
             ? (float) $orderData['total_price']
-            : ($product ? (float) $product->price * $quantity : 0.0);
+            : $defaultPrice;
 
         $displayName = $this->formatProductNameWithVariants($baseName, $orderData);
 
@@ -38,7 +45,7 @@ class OrderDataNormalizer
             'total_price' => $totalPrice,
             'customer_name' => trim((string) ($orderData['customer_name'] ?? '')) ?: 'N/A',
             'customer_address' => trim((string) ($orderData['customer_address'] ?? '')) ?: 'N/A',
-            'customer_phone' => trim((string) ($orderData['customer_phone'] ?? '')) ?: $whatsappNumber,
+            'customer_phone' => $customerPhone,
         ];
     }
 

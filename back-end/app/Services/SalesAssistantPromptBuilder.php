@@ -25,11 +25,7 @@ class SalesAssistantPromptBuilder
         $businessDesc = $business->description ?: 'No additional description.';
         $catalog = $this->buildProductCatalog($business);
         $knownCustomer = $this->buildKnownCustomerBlock($business, $customerPhone);
-        $whatsappPhone = $customerPhone ? $this->normalizePhone($customerPhone) : null;
-
-        $phoneLine = $whatsappPhone
-            ? "WhatsApp number on file: {$whatsappPhone} — use as delivery phone unless the customer explicitly gives another."
-            : 'Phone not linked yet — collect once during checkout.';
+        $phoneLine = 'Delivery phone is not auto-filled. Ask the customer to type the delivery phone number during checkout.';
 
         return <<<PROMPT
 You are the professional WhatsApp sales assistant for "{$businessName}".
@@ -60,7 +56,7 @@ COLLECTION FLOW (strict order)
 3) Delivery identity — ask ONLY fields missing from KNOWN CUSTOMER PROFILE:
    - Full name
    - Full delivery address
-   - Phone (skip if WhatsApp number is enough and they did not ask to use another number)
+   - Phone (always ask the customer to type the delivery phone; never use the WhatsApp sender number automatically)
 4) Summary — one short recap (product, options, qty, price estimate, name, address, phone).
 5) Confirmation — ask for explicit OK (OK / oui / نعم / واخا / yes). Call create_order ONLY after clear confirmation.
 
@@ -69,10 +65,12 @@ MESSAGE RULES (critical)
 - Keep replies short: 1–3 lines, WhatsApp-friendly.
 - Do NOT repeat questions already answered in the chat history or KNOWN CUSTOMER PROFILE.
 - If the customer gives several answers at once, acknowledge them and only ask what is still missing.
+- Never invent, infer, reuse, or auto-fill the delivery phone from the WhatsApp sender/contact number or stored profile. If the phone is missing, ask for it and wait.
 - If stock is 0, say so and suggest another catalog item — do not sell out-of-stock products.
 - If unsure or the request is outside the catalog, say you will connect them to a human agent.
 
 ORDER COMPLETION
+- Call create_order only after the customer typed the delivery phone in the conversation and explicitly confirmed the recap.
 - After create_order succeeds, send a warm confirmation that the order is received and being prepared.
 - Do not call create_order twice for the same purchase; for a new product, start a new flow.
 - Calculate total_price = unit price × quantity using catalog prices only.
@@ -92,7 +90,7 @@ PROMPT;
                 'type' => 'function',
                 'function' => [
                     'name' => 'create_order',
-                    'description' => 'Create the order after ALL required details are collected and the customer explicitly confirmed (OK/yes/oui/نعم/واخا). Do not call early.',
+                    'description' => 'Create the order after ALL required details are collected, including a delivery phone typed by the customer, and the customer explicitly confirmed (OK/yes/oui/نعم/واخا). Do not call early.',
                     'parameters' => [
                         'type' => 'object',
                         'properties' => [
@@ -118,7 +116,7 @@ PROMPT;
                             ],
                             'customer_phone' => [
                                 'type' => 'string',
-                                'description' => 'Delivery phone. Use WhatsApp number if customer did not provide another.',
+                                'description' => 'Delivery phone typed by the customer during this chat. Never use the WhatsApp sender number or a guessed number.',
                             ],
                             'color' => [
                                 'type' => 'string',
@@ -206,7 +204,7 @@ PROMPT;
     private function buildKnownCustomerBlock(Business $business, ?string $customerPhone): string
     {
         if (! $customerPhone) {
-            return "KNOWN CUSTOMER PROFILE\n(none yet — collect name, address, and phone once during the first order)";
+            return "KNOWN CUSTOMER PROFILE\n(none yet - collect name, address, and a typed delivery phone during checkout)";
         }
 
         $order = Order::query()
@@ -223,20 +221,18 @@ PROMPT;
             ->first();
 
         if (! $order) {
-            return "KNOWN CUSTOMER PROFILE\n- Phone (WhatsApp): {$this->normalizePhone($customerPhone)}\n- Name: unknown — ask once\n- Address: unknown — ask once";
+            return "KNOWN CUSTOMER PROFILE\n- Name: unknown - ask once\n- Address: unknown - ask once\n- Phone: unknown - ask the customer to type the delivery phone";
         }
 
         $name = $order->customer_name;
         $address = ($order->customer_address && $order->customer_address !== 'N/A')
             ? $order->customer_address
             : 'unknown — ask once';
-        $phone = $order->customer_phone ?: $this->normalizePhone($customerPhone);
-
         return <<<BLOCK
-KNOWN CUSTOMER PROFILE (already on file — do NOT ask again unless the customer wants to change them)
+KNOWN CUSTOMER PROFILE (name/address may be on file - do NOT ask again unless the customer wants to change them)
 - Full name: {$name}
 - Address: {$address}
-- Phone: {$phone}
+- Phone: unknown for this checkout - ask the customer to type the delivery phone
 BLOCK;
     }
 

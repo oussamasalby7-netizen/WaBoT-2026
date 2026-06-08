@@ -8,6 +8,7 @@
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
+        <!-- NOSONAR (SonarQube S5146): SRI is not feasible here. The fonts.bunny.net CSS endpoint is dynamically generated based on the client's User-Agent to serve optimized font formats (WOFF2 vs WOFF). A static SRI hash would break the site for different browsers. -->
         <link href="https://fonts.bunny.net/css?family=figtree:400,600&display=swap" rel="stylesheet" />
 
         <!-- Styles -->

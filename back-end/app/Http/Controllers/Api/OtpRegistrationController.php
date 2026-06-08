@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rules\Password;
 
 class OtpRegistrationController extends Controller
 {
@@ -25,7 +26,11 @@ class OtpRegistrationController extends Controller
         $validator = Validator::make($request->all(), [
             'name'                  => 'required|string|max:255',
             'email'                 => 'required|string|email|max:255|unique:users,email',
-            'password'              => 'required|string|min:8|confirmed',
+            'password'              => ['required', 'confirmed', Password::min(8)
+                ->mixedCase()
+                ->numbers()
+                ->symbols()
+                ->uncompromised(0)],
             'password_confirmation' => 'required|string',
         ]);
 

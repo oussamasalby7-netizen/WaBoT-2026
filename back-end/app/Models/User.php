@@ -77,16 +77,8 @@ class User extends Authenticatable
             return true;
         }
 
-        if ($this->is_blocked) {
-            return false;
-        }
-
-        // IMPORTANT FIX: automatically treat user as inactive if expired (even if active = true)
-        if ($this->subscription_period_end && $this->subscription_period_end->isPast()) {
-            return false;
-        }
-
-        return ($this->subscription_status === 'pro' || $this->subscription_plan === 'pro')
+        return !$this->is_blocked
+            && ($this->subscription_status === 'pro' || $this->subscription_plan === 'pro')
             && $this->subscription_period_end
             && $this->subscription_period_end->isFuture();
     }

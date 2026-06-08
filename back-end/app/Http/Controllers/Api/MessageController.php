@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\Validator;
 
 class MessageController extends Controller
 {
+    private const ERR_NO_BUSINESS = 'Business not found';
+
     public function index(Request $request)
     {
         $business = $request->user()->business;
@@ -19,7 +21,7 @@ class MessageController extends Controller
         if (! $business) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Business not found',
+                'message' => self::ERR_NO_BUSINESS,
             ], 404);
         }
 
@@ -65,7 +67,7 @@ class MessageController extends Controller
         if (! $business) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Business not found',
+                'message' => self::ERR_NO_BUSINESS,
             ], 404);
         }
 
@@ -88,7 +90,7 @@ class MessageController extends Controller
         if (! $business) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Business not found',
+                'message' => self::ERR_NO_BUSINESS,
             ], 404);
         }
 
@@ -140,28 +142,31 @@ class MessageController extends Controller
         $baseUrl = rtrim(config('services.baileys.url'), '/');
         $secret = config('services.baileys.secret');
 
-        if (! $baseUrl || ! $secret) {
-            return ['sent' => false, 'error' => 'Baileys service is not configured'];
-        }
+        $result = ['sent' => false, 'error' => 'Baileys service is not configured'];
 
-        try {
-            $response = Http::timeout(10)
-                ->withHeaders(['X-Service-Secret' => $secret])
-                ->post($baseUrl . '/send', [
-                    'userId' => (string) $userId,
-                    'to' => $to,
-                    'message' => $message,
-                ]);
+        if ($baseUrl && $secret) {
+            try {
+                $response = Http::timeout(10)
+                    ->withHeaders(['X-Service-Secret' => $secret])
+                    ->post($baseUrl . '/send', [
+                        'userId' => (string) $userId,
+                        'to' => $to,
+                        'message' => $message,
+                    ]);
 
-            if ($response->successful()) {
-                return ['sent' => true, 'error' => null];
+                if ($response->successful()) {
+                    $result = ['sent' => true, 'error' => null];
+                } else {
+                    Log::error('Baileys manual reply error: ' . $response->body());
+                    $result = ['sent' => false, 'error' => $response->json('message') ?? 'WhatsApp session is not connected'];
+                }
+            } catch (\Throwable $e) {
+                Log::error('Baileys manual reply exception: ' . $e->getMessage());
+                $result = ['sent' => false, 'error' => 'Baileys service is unreachable'];
             }
-
-            Log::error('Baileys manual reply error: ' . $response->body());
-            return ['sent' => false, 'error' => $response->json('message') ?? 'WhatsApp session is not connected'];
-        } catch (\Throwable $e) {
-            Log::error('Baileys manual reply exception: ' . $e->getMessage());
-            return ['sent' => false, 'error' => 'Baileys service is unreachable'];
         }
+
+        return $result;
     }
 }
+

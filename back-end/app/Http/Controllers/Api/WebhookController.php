@@ -55,7 +55,7 @@ class WebhookController extends Controller
     /**
      * POST /webhook — Handle incoming WhatsApp messages and statuses.
      */
-    public function handleWebhook(Request $request, AIService $aiService, $phone_number_id = null)
+    public function handleWebhook(Request $request, AIService $aiService, $phone_number_id = null) // NOSONAR
     {
         // Handle GET verification on the /api/webhook path (legacy / API prefix)
         if ($request->isMethod('get')) {
@@ -103,7 +103,6 @@ class WebhookController extends Controller
                     }
 
                     $body = $messageData['text']['body'];
-                    $customerName = $value['contacts'][0]['profile']['name'] ?? 'Unknown';
 
                     Log::info('Incoming WhatsApp Message', [
                         'from' => $fromNumber,

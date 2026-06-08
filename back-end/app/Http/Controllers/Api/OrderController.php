@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Validator;
 
 class OrderController extends Controller
 {
+    private const ERR_NOT_FOUND = 'Order not found or access denied';
+
     /**
      * Display a listing of the user's business orders.
      */
@@ -96,7 +98,7 @@ class OrderController extends Controller
         if (!$order) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Order not found or access denied'
+                'message' => self::ERR_NOT_FOUND
             ], 404);
         }
 
@@ -117,7 +119,7 @@ class OrderController extends Controller
         if (!$order) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Order not found or access denied'
+                'message' => self::ERR_NOT_FOUND
             ], 404);
         }
 
@@ -161,7 +163,7 @@ class OrderController extends Controller
         if (!$order) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Order not found or access denied'
+                'message' => self::ERR_NOT_FOUND
             ], 404);
         }
 

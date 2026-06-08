@@ -17,80 +17,90 @@ class BaileysController extends Controller
 {
     public function incoming(Request $request, AIService $aiService)
     {
+        $response = null;
+
         if ($request->header('X-Service-Secret') !== config('services.baileys.secret')) {
             Log::warning('Baileys incoming: invalid service secret', ['ip' => $request->ip()]);
-            return response()->json(['status' => 'error', 'message' => 'Unauthorized'], 401);
+            $response = response()->json(['status' => 'error', 'message' => 'Unauthorized'], 401);
         }
 
-        $data = $request->validate([
-            'from' => 'required|string',
-            'body' => 'required|string|max:4096',
-            'push_name' => 'nullable|string|max:255',
-            'message_id' => 'nullable|string|max:255',
-            'user_id' => 'required|integer|exists:users,id',
-        ]);
-
-        $fromNumber = $data['from'];
-        $body = $data['body'];
-        $messageId = $data['message_id'] ?? ('BAILEYS_' . uniqid());
-        $userId = (int) $data['user_id'];
-
-        $business = Business::where('user_id', $userId)->first();
-
-        if (! $business) {
-            Log::error("Baileys incoming: no business found for user_id {$userId}");
-            return response()->json([
-                'status' => 'error',
-                'message' => 'No business configured for this user',
-            ], 200);
-        }
-
-        if (Message::where('whatsapp_message_id', $messageId)->exists()) {
-            Log::info("Baileys incoming duplicate skipped: {$messageId}");
-            return response()->json(['status' => 'success', 'reply' => null]);
-        }
-
-        $customerMessage = Message::create([
-            'business_id' => $business->id,
-            'customer_number' => $fromNumber,
-            'from_number' => $fromNumber,
-            'body' => $body,
-            'whatsapp_message_id' => $messageId,
-        ]);
-
-        event(new MessageReceived($business->id, $customerMessage->toArray()));
-
-        try {
-            $aiResponse = $aiService->generateReply($business, $body, $fromNumber);
-            $aiReply = $aiResponse['reply'] ?? null;
-            $orderData = $aiResponse['order'] ?? null;
-        } catch (\Throwable $e) {
-            Log::error("AIService exception for Baileys message from {$fromNumber}: " . $e->getMessage());
-            $aiReply = "Merci pour votre message ! Un agent vous repondra tres bientot.";
-            $orderData = null;
-        }
-
-        if ($aiReply) {
-            $aiMessage = Message::create([
-                'business_id' => $business->id,
-                'customer_number' => $fromNumber,
-                'from_number' => 'AI_ASSISTANT',
-                'body' => $aiReply,
-                'whatsapp_message_id' => 'AI_' . uniqid(),
+        if (! $response) {
+            $data = $request->validate([
+                'from' => 'required|string',
+                'body' => 'required|string|max:4096',
+                'push_name' => 'nullable|string|max:255',
+                'message_id' => 'nullable|string|max:255',
+                'user_id' => 'required|integer|exists:users,id',
             ]);
 
-            event(new MessageReceived($business->id, $aiMessage->toArray()));
+            $fromNumber = $data['from'];
+            $body = $data['body'];
+            $messageId = $data['message_id'] ?? ('BAILEYS_' . uniqid());
+            $userId = (int) $data['user_id'];
+
+            $business = Business::where('user_id', $userId)->first();
+
+            if (! $business) {
+                Log::error("Baileys incoming: no business found for user_id {$userId}");
+                $response = response()->json([
+                    'status' => 'error',
+                    'message' => 'No business configured for this user',
+                ], 200);
+            }
         }
 
-        if ($orderData) {
-            $this->createOrderFromAI($business, $customerMessage, $fromNumber, $orderData);
+        if (! $response) {
+            if (Message::where('whatsapp_message_id', $messageId)->exists()) {
+                Log::info("Baileys incoming duplicate skipped: {$messageId}");
+                $response = response()->json(['status' => 'success', 'reply' => null]);
+            }
         }
 
-        return response()->json([
-            'status' => 'success',
-            'reply' => $aiReply,
-            'order' => $orderData,
-        ]);
+        if (! $response) {
+            $customerMessage = Message::create([
+                'business_id' => $business->id,
+                'customer_number' => $fromNumber,
+                'from_number' => $fromNumber,
+                'body' => $body,
+                'whatsapp_message_id' => $messageId,
+            ]);
+
+            event(new MessageReceived($business->id, $customerMessage->toArray()));
+
+            try {
+                $aiResponse = $aiService->generateReply($business, $body, $fromNumber);
+                $aiReply = $aiResponse['reply'] ?? null;
+                $orderData = $aiResponse['order'] ?? null;
+            } catch (\Throwable $e) {
+                Log::error("AIService exception for Baileys message from {$fromNumber}: " . $e->getMessage());
+                $aiReply = "Merci pour votre message ! Un agent vous repondra tres bientot.";
+                $orderData = null;
+            }
+
+            if ($aiReply) {
+                $aiMessage = Message::create([
+                    'business_id' => $business->id,
+                    'customer_number' => $fromNumber,
+                    'from_number' => 'AI_ASSISTANT',
+                    'body' => $aiReply,
+                    'whatsapp_message_id' => 'AI_' . uniqid(),
+                ]);
+
+                event(new MessageReceived($business->id, $aiMessage->toArray()));
+            }
+
+            if ($orderData) {
+                $this->createOrderFromAI($business, $customerMessage, $fromNumber, $orderData);
+            }
+
+            $response = response()->json([
+                'status' => 'success',
+                'reply' => $aiReply,
+                'order' => $orderData,
+            ]);
+        }
+
+        return $response;
     }
 
     public function health()
@@ -144,3 +154,4 @@ class BaileysController extends Controller
         }
     }
 }
+

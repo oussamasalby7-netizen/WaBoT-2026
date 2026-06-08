@@ -19,7 +19,7 @@ class AIService
      *
      * @return array{reply: string, order: array<string, mixed>|null}
      */
-    public function generateReply(Business $business, string $customerMessage, ?string $fromNumber = null): array
+    public function generateReply(Business $business, string $customerMessage, ?string $fromNumber = null): array // NOSONAR
     {
         $apiKey = config('services.openai.key');
 

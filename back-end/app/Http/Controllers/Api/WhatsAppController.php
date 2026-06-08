@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Log;
 
 class WhatsAppController extends Controller
 {
+    private const ERR_UNREACHABLE = 'Service unreachable';
+
     public function status(Request $request, int $userId)
     {
         $this->authorizeUser($request, $userId);
@@ -17,7 +19,7 @@ class WhatsAppController extends Controller
         $response = $this->callNode('get', "/sessions/{$userId}/status");
 
         return response()->json(
-            $response ?? ['status' => 'success', 'data' => ['connected' => false, 'error' => 'Service unreachable']]
+            $response ?? ['status' => 'success', 'data' => ['connected' => false, 'error' => self::ERR_UNREACHABLE]]
         );
     }
 
@@ -45,7 +47,7 @@ class WhatsAppController extends Controller
         $response = $this->callNode('post', "/sessions/{$userId}/disconnect");
 
         return response()->json(
-            $response ?? ['status' => 'error', 'message' => 'Service unreachable']
+            $response ?? ['status' => 'error', 'message' => self::ERR_UNREACHABLE]
         );
     }
 
@@ -56,7 +58,7 @@ class WhatsAppController extends Controller
         $response = $this->callNode('post', "/sessions/{$userId}/start");
 
         return response()->json(
-            $response ?? ['status' => 'error', 'message' => 'Service unreachable']
+            $response ?? ['status' => 'error', 'message' => self::ERR_UNREACHABLE]
         );
     }
 
@@ -94,3 +96,4 @@ class WhatsAppController extends Controller
         }
     }
 }
+

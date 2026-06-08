@@ -16,10 +16,10 @@ class DatabaseSeeder extends Seeder
     {
         // 1. Create demo and admin users
         User::updateOrCreate(
-            ['email' => 'admin@wabot.com'],
+            ['email' => 'ejjoudmohamed0@gmail.com'],
             [
                 'name' => 'Admin User',
-                'password' => bcrypt('password123'),
+                'password' => bcrypt('Mohamed##EJJOUD1919'),
                 'role' => 'admin',
                 'subscription_status' => 'pro',
                 'subscription_plan' => 'pro',

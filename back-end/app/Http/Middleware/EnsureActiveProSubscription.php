@@ -15,30 +15,25 @@ class EnsureActiveProSubscription
     public function handle(Request $request, Closure $next): Response
     {
         $user = $request->user();
+        $response = null;
 
         if (! $user) {
-            return response()->json(['status' => 'error', 'message' => 'Unauthenticated'], 401);
+            $response = response()->json(['status' => 'error', 'message' => 'Unauthenticated'], 401);
+        } elseif ($user->role !== 'admin') {
+            if ($user->is_blocked) {
+                $response = response()->json([
+                    'status' => 'error',
+                    'message' => 'Your account is blocked.',
+                ], 403);
+            } elseif (! $user->hasActiveProSubscription()) {
+                $response = response()->json([
+                    'status' => 'error',
+                    'code' => 'subscription_required',
+                    'message' => 'An active PRO subscription is required to use this service.',
+                ], 403);
+            }
         }
 
-        if ($user->role === 'admin') {
-            return $next($request);
-        }
-
-        if ($user->is_blocked) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Your account is blocked.',
-            ], 403);
-        }
-
-        if (! $user->hasActiveProSubscription()) {
-            return response()->json([
-                'status' => 'error',
-                'code' => 'subscription_required',
-                'message' => 'An active PRO subscription is required to use this service.',
-            ], 403);
-        }
-
-        return $next($request);
+        return $response ?: $next($request);
     }
 }
