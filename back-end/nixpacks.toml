@@ -15,12 +15,12 @@ nixPkgs = ["php82", "php82Packages.composer", "nodejs"]
 dependsOn = ["setup"]
 cmds = [
     "composer install --no-dev --optimize-autoloader --no-interaction --ignore-platform-reqs",
-    "npm ci && npm run build"
+    "if [ -f package-lock.json ]; then npm ci && npm run build; else npm install && npm run build; fi"
 ]
 
 [start]
 # API service (Railway Service 1)
-cmd = "php artisan config:clear && php artisan serve --host=0.0.0.0 --port=$PORT"
+cmd = "php artisan config:clear && php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=$PORT"
 
 # WebSockets service (Railway Service 2 — same repo, separate service):
 #   Start command: sh scripts/start-websockets.sh

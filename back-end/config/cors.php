@@ -19,30 +19,11 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => (function () {
-        $origins = [];
-
-        foreach (explode(',', (string) env('CORS_ALLOWED_ORIGINS', '')) as $origin) {
-            $origin = trim($origin);
-            if ($origin !== '') {
-                $origins[] = $origin;
-            }
-        }
-
-        $frontendUrl = trim((string) env('FRONTEND_URL', ''));
-        if ($frontendUrl !== '') {
-            $origins[] = $frontendUrl;
-        }
-
-        // Production Vercel deployment
-        $origins[] = 'https://wa-bo-t-2026.vercel.app';
-
-        if (empty($origins)) {
-            $origins[] = 'http://localhost:5173';
-        }
-
-        return array_values(array_unique($origins));
-    })(),
+    'allowed_origins' => array_values(array_unique(array_filter(array_merge(
+        ['http://localhost:5173', 'https://wa-bo-t-2026.vercel.app'],
+        array_map('trim', explode(',', (string) env('CORS_ALLOWED_ORIGINS', ''))),
+        [trim((string) env('FRONTEND_URL', ''))]
+    )))),
 
     'allowed_origins_patterns' => array_values(array_filter(array_map(
         'trim',
