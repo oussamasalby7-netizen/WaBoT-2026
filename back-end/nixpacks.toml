@@ -6,15 +6,10 @@
 php = {}
 node = {}
 
-[phases.setup]
-# Force nixpacks to use PHP 8.2 or 8.3
-nixPkgs = ["php82", "php82Packages.composer", "nodejs"]
-
 [phases.build]
-# Build steps for production
 dependsOn = ["setup"]
 cmds = [
-    "composer install --no-dev --optimize-autoloader --no-interaction --ignore-platform-reqs",
+    "composer install --no-dev --optimize-autoloader --no-interaction",
     "if [ -f package-lock.json ]; then npm ci && npm run build; else npm install && npm run build; fi"
 ]
 
