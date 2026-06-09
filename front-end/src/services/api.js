@@ -1,7 +1,11 @@
 import axios from "axios";
 import { toast } from "sonner";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000/api";
+const API_URL =
+  import.meta.env.VITE_API_URL ||
+  (import.meta.env.DEV
+    ? "http://127.0.0.1:8000/api"
+    : "https://wabot-2026-production.up.railway.app/api");
 
 let unauthorizedHandler = null;
 
