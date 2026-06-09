@@ -6,8 +6,8 @@ back-end/vendor/
 **/.env
 **/.env.*
 !**/.env.example
+!**/.env.production
 **/.env.backup
-**/.env.production
 
 # Build artifacts
 front-end/dist/

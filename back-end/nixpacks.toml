@@ -19,9 +19,9 @@ cmds = [
 ]
 
 [start]
-# Option A: Production-ready Nginx + PHP-FPM (Nixpacks default)
-# To use the default production-ready Nginx server, leave this commented out and Nixpacks will configure it.
-# cmd = "fpm -F && nginx -g 'daemon off;'"
+# API service (Railway Service 1)
+cmd = "php artisan config:clear && php artisan serve --host=0.0.0.0 --port=$PORT"
 
-# Option B: php artisan serve (using the dynamic $PORT provided by Railway)
-cmd = "php artisan serve --host=0.0.0.0 --port=$PORT"
+# WebSockets service (Railway Service 2 — same repo, separate service):
+#   Start command: sh scripts/start-websockets.sh
+#   Set PUSHER_HOST / VITE_PUSHER_HOST to that service's public Railway domain.

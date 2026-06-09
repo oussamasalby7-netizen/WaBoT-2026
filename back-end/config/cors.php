@@ -15,13 +15,39 @@ return [
     |
     */
 
-    'paths' => ['api/*', 'sanctum/csrf-cookie'],
+    'paths' => ['api/*', 'sanctum/csrf-cookie', 'broadcasting/auth'],
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => array_filter(array_map('trim', explode(',', env('CORS_ALLOWED_ORIGINS', env('FRONTEND_URL', 'http://localhost:5173'))))),
+    'allowed_origins' => (function () {
+        $origins = [];
 
-    'allowed_origins_patterns' => [],
+        foreach (explode(',', (string) env('CORS_ALLOWED_ORIGINS', '')) as $origin) {
+            $origin = trim($origin);
+            if ($origin !== '') {
+                $origins[] = $origin;
+            }
+        }
+
+        $frontendUrl = trim((string) env('FRONTEND_URL', ''));
+        if ($frontendUrl !== '') {
+            $origins[] = $frontendUrl;
+        }
+
+        // Production Vercel deployment
+        $origins[] = 'https://wa-bo-t-2026.vercel.app';
+
+        if (empty($origins)) {
+            $origins[] = 'http://localhost:5173';
+        }
+
+        return array_values(array_unique($origins));
+    })(),
+
+    'allowed_origins_patterns' => array_values(array_filter(array_map(
+        'trim',
+        explode(',', (string) env('CORS_ALLOWED_ORIGINS_PATTERNS', ''))
+    ))),
 
     'allowed_headers' => ['*'],
 
