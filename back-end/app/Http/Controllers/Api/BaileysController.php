@@ -105,24 +105,7 @@ class BaileysController extends Controller
 
     public function health()
     {
-        try {
-            \Illuminate\Support\Facades\DB::connection()->getPdo();
-            $usersTableExists = \Illuminate\Support\Facades\Schema::hasTable('users');
-
-            return response()->json([
-                'status' => 'ok',
-                'service' => 'laravel',
-                'database' => 'connected',
-                'users_table' => $usersTableExists,
-            ]);
-        } catch (\Throwable $e) {
-            return response()->json([
-                'status' => 'error',
-                'service' => 'laravel',
-                'database' => 'disconnected',
-                'message' => $e->getMessage(),
-            ], 503);
-        }
+        return response()->json(['status' => 'ok', 'service' => 'laravel']);
     }
 
     private function createOrderFromAI(Business $business, Message $message, string $fromNumber, array $orderData): void

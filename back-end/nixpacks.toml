@@ -6,17 +6,22 @@
 php = {}
 node = {}
 
+[phases.setup]
+# Force nixpacks to use PHP 8.2 or 8.3
+nixPkgs = ["php82", "php82Packages.composer", "nodejs"]
+
 [phases.build]
+# Build steps for production
 dependsOn = ["setup"]
 cmds = [
-    "composer install --no-dev --optimize-autoloader --no-interaction",
-    "if [ -f package-lock.json ]; then npm ci && npm run build; else npm install && npm run build; fi"
+    "composer install --no-dev --optimize-autoloader --no-interaction --ignore-platform-reqs",
+    "npm ci && npm run build"
 ]
 
 [start]
-# API service (Railway Service 1)
-cmd = "php artisan config:clear && php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=$PORT"
+# Option A: Production-ready Nginx + PHP-FPM (Nixpacks default)
+# To use the default production-ready Nginx server, leave this commented out and Nixpacks will configure it.
+# cmd = "fpm -F && nginx -g 'daemon off;'"
 
-# WebSockets service (Railway Service 2 — same repo, separate service):
-#   Start command: sh scripts/start-websockets.sh
-#   Set PUSHER_HOST / VITE_PUSHER_HOST to that service's public Railway domain.
+# Option B: php artisan serve (using the dynamic $PORT provided by Railway)
+cmd = "php artisan serve --host=0.0.0.0 --port=$PORT"

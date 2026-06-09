@@ -85,16 +85,18 @@ class AuthController extends Controller
             ], 422);
         }
 
-        $user = User::where('email', $request->email)->first();
-
-        if (!$user || !Hash::check($request->password, $user->password)) {
+        if (!Auth::attempt($request->only('email', 'password'))) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Invalid login credentials'
             ], 401);
         }
 
+        $user = User::where('email', $request->email)->firstOrFail();
+
         if ($user->is_blocked) {
+            Auth::logout();
+
             return response()->json([
                 'status' => 'error',
                 'message' => 'auth.blockedAccount'

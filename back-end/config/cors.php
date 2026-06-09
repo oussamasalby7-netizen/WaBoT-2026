@@ -15,20 +15,13 @@ return [
     |
     */
 
-    'paths' => ['api/*', 'sanctum/csrf-cookie', 'broadcasting/auth'],
+    'paths' => ['api/*', 'sanctum/csrf-cookie'],
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => array_values(array_unique(array_filter(array_merge(
-        ['http://localhost:5173', 'https://wa-bo-t-2026.vercel.app'],
-        array_map('trim', explode(',', (string) env('CORS_ALLOWED_ORIGINS', ''))),
-        [trim((string) env('FRONTEND_URL', ''))]
-    )))),
+    'allowed_origins' => array_filter(array_map('trim', explode(',', env('CORS_ALLOWED_ORIGINS', env('FRONTEND_URL', 'http://localhost:5173'))))),
 
-    'allowed_origins_patterns' => array_values(array_filter(array_map(
-        'trim',
-        explode(',', (string) env('CORS_ALLOWED_ORIGINS_PATTERNS', ''))
-    ))),
+    'allowed_origins_patterns' => [],
 
     'allowed_headers' => ['*'],
 

@@ -8,7 +8,7 @@ return [
      * Set a custom dashboard configuration
      */
     'dashboard' => [
-        'port' => (int) env('LARAVEL_WEBSOCKETS_PORT', env('PORT', 6001)),
+        'port' => env('LARAVEL_WEBSOCKETS_PORT', 6001),
     ],
 
     /*
@@ -47,11 +47,9 @@ return [
      * This array contains the hosts of which you want to allow incoming requests.
      * Leave this empty if you want to accept requests from all hosts.
      */
-    'allowed_origins' => array_values(array_unique(array_filter([
-        trim((string) env('FRONTEND_URL', '')),
-        'https://wa-bo-t-2026.vercel.app',
-        ...array_map('trim', explode(',', (string) env('CORS_ALLOWED_ORIGINS', ''))),
-    ]))),
+    'allowed_origins' => [
+        //
+    ],
 
     /*
      * The maximum request size in kilobytes that is allowed for an incoming WebSocket request.
