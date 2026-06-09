@@ -23,3 +23,14 @@ Route::get('/', function () {
 // CSRF is excluded for this path in VerifyCsrfToken.php.
 Route::get('/webhook',  [WebhookController::class, 'verify']);
 Route::post('/webhook', [WebhookController::class, 'handleWebhook']);
+
+use Illuminate\Support\Facades\DB;
+
+Route::get('/test-db', function () {
+    try {
+        DB::connection()->getPdo();
+        return "Database Connected";
+    } catch (\Exception $e) {
+        return $e->getMessage();
+    }
+});
