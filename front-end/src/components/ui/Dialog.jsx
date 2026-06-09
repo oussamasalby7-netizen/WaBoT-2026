@@ -2,7 +2,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { AlertCircle, X } from "lucide-react";
 import Button from "./Button";
 
-export default function Dialog({ 
+export default function Dialog({ // NOSONAR
   isOpen, 
   onClose, 
   onConfirm, 

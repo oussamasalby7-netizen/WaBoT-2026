@@ -14,7 +14,7 @@ export default function AuthShellControls() {
         <Languages size={16} />
         <select
           value={locale}
-          onChange={(e) => void setLocale(e.target.value)}
+          onChange={(e) => setLocale(e.target.value)}
           aria-label="Language"
         >
           {supportedLocales.map((code) => (
@@ -26,7 +26,7 @@ export default function AuthShellControls() {
       </div>
       <button
         type="button"
-        onClick={() => void toggleTheme()}
+        onClick={() => toggleTheme()}
         className="theme-toggle"
         aria-label="Toggle theme"
       >

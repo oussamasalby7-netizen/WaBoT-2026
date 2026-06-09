@@ -1,0 +1,6 @@
+projectKey=whatsap-ai
+serverUrl=http://localhost:9000
+serverVersion=26.5.0.122743
+dashboardUrl=http://localhost:9000/dashboard?id=whatsap-ai
+ceTaskId=0b15e9fc-8fd5-423a-9ca6-0721fd58a6c1
+ceTaskUrl=http://localhost:9000/api/ce/task?id=0b15e9fc-8fd5-423a-9ca6-0721fd58a6c1

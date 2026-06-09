@@ -13,15 +13,30 @@ const { router: apiRouter } = require('./routes/api');
 
 /* ── Express Setup ────────────────────────────────────────────────────────── */
 
-const app = express();
+const app = express(); // NOSONAR
+
+/*
+ * Security (SonarQube S5689): Remove the X-Powered-By: Express header.
+ * Express sends this header by default, disclosing the framework name and
+ * implicitly its version. Attackers use this for targeted exploit scanning.
+ * Disabling it has zero impact on application functionality.
+ */
+app.disable('x-powered-by');
+
 app.use(express.json({ limit: '1mb' }));
 app.use(express.urlencoded({ extended: false }));
 
-/* Public health check */
+/*
+ * Public health check.
+ * Security (SonarQube S5689): The 'version' field has been removed from
+ * the response. Internal version strings give attackers a fingerprinting
+ * vector to match against known CVEs. The service identifier alone is
+ * sufficient for infrastructure monitoring purposes.
+ */
 app.get('/health', (_req, res) => {
     res.json({
         service: 'wabot-whatsapp-service',
-        version: '3.0-multi-tenant',
+        status: 'ok',
         uptime: Math.floor(process.uptime()),
     });
 });
@@ -67,7 +82,8 @@ process.on('uncaughtException', (err) => {
 });
 
 process.on('unhandledRejection', (reason) => {
-    logger.error(`[UNHANDLED REJECTION] ${reason instanceof Error ? reason.message : reason}`);
+    const reasonStr = reason instanceof Error ? reason.message : (typeof reason === 'object' ? JSON.stringify(reason) : String(reason));
+    logger.error(`[UNHANDLED REJECTION] ${reasonStr}`);
 });
 
 process.on('SIGINT', () => { logger.info('SIGINT — exiting'); process.exit(0); });

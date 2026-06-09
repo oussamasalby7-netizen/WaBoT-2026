@@ -8,6 +8,7 @@ import Input from "../components/ui/Input";
 import Button from "../components/ui/Button";
 import AuthShellControls from "../components/AuthShellControls.jsx";
 import api from "../services/api";
+import { isValidPassword } from "../utils/passwordUtils";
 import "../styles/auth.css";
 
 export default function ResetPassword() {
@@ -38,6 +39,12 @@ export default function ResetPassword() {
     e.preventDefault();
     setFormErrors({});
     setGlobalError("");
+
+    // ReDoS-safe password validation — see src/utils/passwordUtils.js
+    if (!isValidPassword(form.password)) {
+      setFormErrors({ password: [t("auth.passwordPolicy")] });
+      return;
+    }
 
     if (form.password !== form.password_confirmation) {
       setFormErrors({ password_confirmation: [t("settings.passwordsDoNotMatch")] });

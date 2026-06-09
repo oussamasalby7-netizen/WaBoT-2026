@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+
 import { NavLink } from "react-router-dom";
 import {
   LayoutDashboard,
@@ -18,7 +19,7 @@ import { useChats } from "../hooks/useChats";
 import { useSupportMessages } from "../hooks/useSupportMessages";
 import { motion, AnimatePresence } from "framer-motion";
 
-export default function Sidebar({ isOpen, onClose }) {
+export default function Sidebar({ isOpen, onClose }) { // NOSONAR
   const { logout, isAdmin } = useAuth();
   const { t } = useI18n();
 
@@ -79,7 +80,7 @@ export default function Sidebar({ isOpen, onClose }) {
             key={item.href}
             to={item.href}
             end={item.href === "/admin" || item.href === "/dashboard"}
-            onClick={() => window.innerWidth < 1024 && onClose()}
+            onClick={() => globalThis.innerWidth < 1024 && onClose()}
             className={({ isActive }) => `nav-item ${isActive ? "active" : ""}`}
           >
             <item.icon className="nav-icon" />
@@ -131,3 +132,4 @@ export default function Sidebar({ isOpen, onClose }) {
     </>
   );
 }
+

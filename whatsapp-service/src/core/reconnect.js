@@ -108,6 +108,16 @@ function evaluateDisconnect(statusCode) {
 /**
  * Calculate the next retry delay using exponential backoff with jitter.
  *
+ * Security (SonarQube S2245 — PRNG hotspot, reviewed and safe):
+ * Math.random() is used here only to add timing jitter to reconnect delays.
+ * This prevents thundering-herd reconnects after a mass disconnect event.
+ * The random value is NOT used for any security-sensitive purpose:
+ *   - Not a token, nonce, or session identifier
+ *   - Not a cryptographic seed
+ *   - Not a security decision
+ * Using crypto.randomInt() here would be needlessly heavyweight with no
+ * security gain.
+ *
  * @returns {{ delay: number, attempt: number, maxReached: boolean }}
  */
 function getRetryDelay() {
@@ -119,7 +129,8 @@ function getRetryDelay() {
 
     /* Exponential: 3s → 6s → 12s → 24s → 48s, capped at 60s */
     const exponential = Math.min(BASE_DELAY_MS * Math.pow(2, retryCount - 1), 60000);
-    const jitter = exponential * (0.85 + Math.random() * 0.3);
+    // Non-security use: timing jitter for reconnect backoff only.
+    const jitter = exponential * (0.85 + Math.random() * 0.3); // NOSONAR
     const delay = Math.round(jitter);
 
     logger.info(`Reconnect attempt ${retryCount}/${MAX_RETRIES} in ${(delay / 1000).toFixed(1)}s`);

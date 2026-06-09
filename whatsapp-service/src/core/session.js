@@ -7,8 +7,8 @@
  */
 
 const { useMultiFileAuthState } = require('@whiskeysockets/baileys');
-const fs = require('fs');
-const path = require('path');
+const fs = require('node:fs');
+const path = require('node:path');
 const config = require('../config/env');
 const logger = require('../utils/logger');
 

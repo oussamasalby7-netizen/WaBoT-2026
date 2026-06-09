@@ -13,7 +13,7 @@
  * @returns {string}       WhatsApp JID, e.g. "212612345678@s.whatsapp.net"
  */
 function toJid(number) {
-    const cleaned = String(number).replace(/[\s\-+]/g, '');
+    const cleaned = String(number).replaceAll(' ', '').replaceAll('-', '').replaceAll('+', '');
     if (cleaned.includes('@')) return cleaned;
     return `${cleaned}@s.whatsapp.net`;
 }
@@ -59,12 +59,24 @@ function sleep(ms) {
 /**
  * Generate a random delay between min and max (inclusive).
  *
+ * Security (SonarQube S2245 — PRNG hotspot, reviewed and safe):
+ * Math.random() is used here exclusively for cosmetic typing-simulation
+ * jitter — the result is only ever passed to setTimeout() to make the
+ * bot appear more human-like. It is NOT used for:
+ *   - Token or secret generation
+ *   - Session IDs or nonces
+ *   - Cryptographic seeding
+ *   - Any security-sensitive decision
+ * Replacing it with a CSPRNG (crypto.getRandomValues) would provide no
+ * security benefit here and would add unnecessary overhead.
+ *
  * @param {number} min  Minimum ms
  * @param {number} max  Maximum ms
  * @returns {number}
  */
 function randomDelay(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
+    // Non-security use: cosmetic UI jitter only (typing simulation).
+    return Math.floor(Math.random() * (max - min + 1)) + min; // NOSONAR
 }
 
 module.exports = {

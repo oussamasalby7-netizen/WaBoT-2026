@@ -63,6 +63,7 @@ export default {
     passwordResetSuccess: "Votre mot de passe a été mis à jour. Vous allez être redirigé vers la page de connexion automatiquement.",
     remembered: "Vous vous en souvenez ?",
     blockedAccount: "Votre compte a été suspendu par l'administration. Veuillez contacter le support pour résoudre ce problème.",
+    passwordPolicy: "Doit comporter ≥8 caractères, incluant majuscule, minuscule, chiffre et caractère spécial.",
   },
   topbar: {
     adminSubtitle: "— utilisateurs et abonnements",

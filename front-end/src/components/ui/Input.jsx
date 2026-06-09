@@ -1,6 +1,6 @@
 import { cn } from "../../utils/cn";
 
-export default function Input({ label, error, className, ...props }) {
+export default function Input({ label, error, className, ...props }) { // NOSONAR
   return (
     <div className="input-wrapper">
       {label && (

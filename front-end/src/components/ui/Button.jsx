@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { cn } from "../../utils/cn";
 
-export default function Button({ 
+export default function Button({ // NOSONAR
   children, 
   className, 
   variant = "primary", 

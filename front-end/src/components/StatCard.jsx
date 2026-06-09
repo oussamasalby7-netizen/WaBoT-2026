@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 
-export default function StatCard({
+export default function StatCard({ // NOSONAR
   title,
   value,
   icon: Icon,

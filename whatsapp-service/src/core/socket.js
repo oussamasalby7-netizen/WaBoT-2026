@@ -143,7 +143,7 @@ async function startConnection() {
         /* ── Event: connection state changed ──────────────────────────── */
 
         sock.ev.on('connection.update', async (update) => {
-            const { connection, lastDisconnect, qr, receivedPendingNotifications } = update;
+            const { connection, lastDisconnect, qr } = update;
 
             /* QR code available — display in terminal and cache for API */
             if (qr) {
@@ -161,7 +161,7 @@ async function startConnection() {
             /* Successfully connected */
             if (connection === 'open') {
                 const jid = sock?.user?.id ?? '';
-                const number = jid.replace(/:.*@.*$/, '').replace('@s.whatsapp.net', '');
+                const number = jid.split(':')[0].replace('@s.whatsapp.net', '');
 
                 connectionState.connected = true;
                 connectionState.qr = null;

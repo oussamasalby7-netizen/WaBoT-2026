@@ -8,6 +8,7 @@ import Input from "../components/ui/Input";
 import Button from "../components/ui/Button";
 import AuthShellControls from "../components/AuthShellControls.jsx";
 import api from "../services/api";
+import { isValidPassword } from "../utils/passwordUtils";
 import "../styles/auth.css";
 
 export default function Register() {
@@ -29,6 +30,13 @@ export default function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setFormErrors({});
+    
+    // ReDoS-safe password validation — see src/utils/passwordUtils.js
+    if (!isValidPassword(formData.password)) {
+      setFormErrors({ password: [t("auth.passwordPolicy")] });
+      return;
+    }
+
     setIsLoading(true);
 
     try {

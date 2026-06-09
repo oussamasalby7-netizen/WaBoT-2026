@@ -2,7 +2,7 @@ import Echo from "laravel-echo";
 import Pusher from "pusher-js";
 import { getToken } from "./api";
 
-window.Pusher = Pusher;
+globalThis.Pusher = Pusher;
 Pusher.logToConsole = import.meta.env.DEV;
 
 const pusherScheme = import.meta.env.VITE_PUSHER_SCHEME || "http";

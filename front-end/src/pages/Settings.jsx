@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import api from "../services/api";
 import { useAuth } from "../hooks/useAuth";
 import { useI18n } from "../context/I18nContext.jsx";
+import { isValidPassword } from "../utils/passwordUtils";
 import "../styles/settings.css";
 
 function useWhatsAppConnection(userId) {
@@ -67,11 +68,11 @@ function useWhatsAppConnection(userId) {
 
   useEffect(() => {
     if (!userId) return;
-    const timeoutId = window.setTimeout(fetchStatus, 0);
-    intervalRef.current = window.setInterval(fetchStatus, 4000);
+    const timeoutId = globalThis.setTimeout(fetchStatus, 0);
+    intervalRef.current = globalThis.setInterval(fetchStatus, 4000);
     return () => {
-      window.clearTimeout(timeoutId);
-      window.clearInterval(intervalRef.current);
+      globalThis.clearTimeout(timeoutId);
+      globalThis.clearInterval(intervalRef.current);
     };
   }, [fetchStatus, userId]);
 
@@ -124,11 +125,23 @@ export default function Settings() {
   };
   const formData = draftFormData ?? businessFormData;
 
-  const waBadgeClass = waStatus.connected
-    ? "connected"
-    : waLoading || waStatus.isConnecting
-    ? "connecting"
-    : "disconnected";
+  let waBadgeClass;
+  if (waStatus.connected) {
+    waBadgeClass = "connected";
+  } else if (waLoading || waStatus.isConnecting) {
+    waBadgeClass = "connecting";
+  } else {
+    waBadgeClass = "disconnected";
+  }
+
+  let waBadgeText;
+  if (waStatus.connected) {
+    waBadgeText = "Connected";
+  } else if (waLoading || waStatus.isConnecting) {
+    waBadgeText = "Connecting...";
+  } else {
+    waBadgeText = "Disconnected";
+  }
 
   const updateFormField = (field, value) => setDraftFormData({ ...formData, [field]: value });
 
@@ -181,8 +194,13 @@ export default function Settings() {
   const handlePasswordSubmit = async (e) => {
     e.preventDefault();
     if (!passwordForm.current_password) return toast.error(t("settings.currentPasswordRequired"));
+
+    // ReDoS-safe password validation — see src/utils/passwordUtils.js
+    if (!isValidPassword(passwordForm.password)) {
+      return toast.error(t("auth.passwordPolicy"));
+    }
+
     if (passwordForm.password !== passwordForm.password_confirmation) return toast.error(t("settings.passwordsDoNotMatch"));
-    if (passwordForm.password.length < 8) return toast.error(t("settings.passwordTooShort"));
 
     setIsUpdatingPassword(true);
     try {
@@ -264,7 +282,7 @@ export default function Settings() {
               </div>
               <span className={`wa-status-badge ${waBadgeClass}`}>
                 <span className="wa-pulse-dot" />
-                {waStatus.connected ? "Connected" : waLoading || waStatus.isConnecting ? "Connecting..." : "Disconnected"}
+                {waBadgeText}
               </span>
             </div>
 
@@ -292,32 +310,43 @@ export default function Settings() {
               </>
             ) : (
               <div className="qr-card">
-                {waLoading && !qrData ? (
-                  <div className="qr-waiting">
-                    <div className="qr-spinner" />
-                    <span>Connecting to WhatsApp service...</span>
-                  </div>
-                ) : qrData ? (
-                  <>
-                    <img src={qrData} alt="WhatsApp QR Code" className="qr-image" />
-                    <p className="qr-instructions">
-                      Open <strong>WhatsApp</strong> on your phone, go to <strong>Appareils connectes</strong>,
-                      then scan this QR code.
-                    </p>
-                  </>
-                ) : !waStatus.serviceAvailable ? (
-                  <div className="qr-waiting">
-                    <WifiOff size={36} style={{ opacity: 0.3 }} />
-                    <span>WhatsApp service is not running.</span>
-                    <span>Start it with <code>npm start</code> inside <code>whatsapp-service/</code></span>
-                  </div>
-                ) : (
-                  <div className="qr-waiting">
-                    <div className="qr-spinner" />
-                    <span>Preparing WhatsApp QR code...</span>
-                    <span>{waStatus.lastError || "Please wait a few seconds, then refresh."}</span>
-                  </div>
-                )}
+                {(() => {
+                  if (waLoading && !qrData) {
+                    return (
+                      <div className="qr-waiting">
+                        <div className="qr-spinner" />
+                        <span>Connecting to WhatsApp service...</span>
+                      </div>
+                    );
+                  }
+                  if (qrData) {
+                    return (
+                      <>
+                        <img src={qrData} alt="WhatsApp QR Code" className="qr-image" />
+                        <p className="qr-instructions">
+                          Open <strong>WhatsApp</strong> on your phone, go to <strong>Appareils connectes</strong>,
+                          then scan this QR code.
+                        </p>
+                      </>
+                    );
+                  }
+                  if (waStatus.serviceAvailable === false) {
+                    return (
+                      <div className="qr-waiting">
+                        <WifiOff size={36} style={{ opacity: 0.3 }} />
+                        <span>WhatsApp service is not running.</span>
+                        <span>Start it with <code>npm start</code> inside <code>whatsapp-service/</code></span>
+                      </div>
+                    );
+                  }
+                  return (
+                    <div className="qr-waiting">
+                      <div className="qr-spinner" />
+                      <span>Preparing WhatsApp QR code...</span>
+                      <span>{waStatus.lastError || "Please wait a few seconds, then refresh."}</span>
+                    </div>
+                  );
+                })()}
                 <Button variant="secondary" onClick={waRefresh} style={{ marginTop: 4 }}>
                   <RefreshCw size={14} style={{ marginRight: 6 }} />
                   Refresh
@@ -415,9 +444,12 @@ export default function Settings() {
 
       {isSupportOpen && (
         <div className="support-modal-overlay">
-          <div
+          <button
+            type="button"
             className="support-modal-backdrop"
+            aria-label="Close support modal"
             onClick={() => !isSubmittingSupport && setIsSupportOpen(false)}
+            onKeyDown={(e) => e.key === "Escape" && !isSubmittingSupport && setIsSupportOpen(false)}
           />
           <div className="support-modal-card">
             <button

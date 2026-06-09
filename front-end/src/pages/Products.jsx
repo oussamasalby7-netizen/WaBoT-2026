@@ -117,24 +117,31 @@ export default function Products() {
       </div>
 
       {/* GRID / STATES */}
-      {isLoading ? (
-        <div className="products-skeleton-grid">
-          {[1, 2, 3, 4].map((i) => (
-            <Skeleton key={i} style={{ height: "280px", borderRadius: "var(--radius-xl)" }} />
-          ))}
-        </div>
-      ) : !filteredProducts || filteredProducts.length === 0 ? (
-        <div className="products-empty">
-          <div className="products-empty-icon">
-            <Package size={32} />
-          </div>
-          <h3>{t("products.noProducts")}</h3>
-          <p>{t("products.noProductsSubtitle")}</p>
-        </div>
-      ) : (
-        <div className="products-grid">
-          <AnimatePresence>
-            {filteredProducts.map((product) => (
+      {(() => {
+        if (isLoading) {
+          return (
+            <div className="products-skeleton-grid">
+              {[1, 2, 3, 4].map((i) => (
+                <Skeleton key={i} style={{ height: "280px", borderRadius: "var(--radius-xl)" }} />
+              ))}
+            </div>
+          );
+        }
+        if (!filteredProducts || filteredProducts.length === 0) {
+          return (
+            <div className="products-empty">
+              <div className="products-empty-icon">
+                <Package size={32} />
+              </div>
+              <h3>{t("products.noProducts")}</h3>
+              <p>{t("products.noProductsSubtitle")}</p>
+            </div>
+          );
+        }
+        return (
+          <div className="products-grid">
+            <AnimatePresence>
+              {filteredProducts.map((product) => (
               <motion.div
                 key={product.id}
                 layout
@@ -204,8 +211,9 @@ export default function Products() {
               </motion.div>
             ))}
           </AnimatePresence>
-        </div>
-      )}
+          </div>
+        );
+      })()}
 
       {/* PRODUCT FORM MODAL */}
       <AnimatePresence>

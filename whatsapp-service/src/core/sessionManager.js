@@ -14,8 +14,8 @@
  *   await mgr.sendMessage('42', '+212600000000', 'Hello');
  */
 
-const path = require('path');
-const fs = require('fs');
+const path = require('node:path');
+const fs = require('node:fs');
 const {
     default: makeWASocket,
     Browsers,
@@ -254,7 +254,7 @@ async function startSession(userId) {
 
             if (connection === 'open') {
                 const jid = sock.user?.id ?? '';
-                const number = jid.replace(/:.*@.*$/, '').replace('@s.whatsapp.net', '');
+                const number = jid.split(':')[0].replace('@s.whatsapp.net', '');
                 state.connected = true;
                 state.qr = null;
                 state.phoneNumber = number || null;
@@ -301,7 +301,8 @@ async function startSession(userId) {
                 }
 
                 const expDelay = Math.min(BASE_DELAY_MS * Math.pow(2, state.retryCount - 1), 60000);
-                const delay = Math.round(expDelay * (0.85 + Math.random() * 0.3));
+                // Non-security use: timing jitter for reconnect backoff only (SonarQube S2245 reviewed — safe).
+                const delay = Math.round(expDelay * (0.85 + Math.random() * 0.3)); // NOSONAR
                 logger.info(`[User ${userId}] Reconnecting in ${(delay / 1000).toFixed(1)}s (attempt ${state.retryCount}/${MAX_RETRIES})`);
                 setTimeout(() => startSession(userId), delay);
             }

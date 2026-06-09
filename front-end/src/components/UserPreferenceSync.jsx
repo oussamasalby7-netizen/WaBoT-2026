@@ -28,10 +28,10 @@ export default function UserPreferenceSync() {
     appliedRef.current = key;
 
     if (user.locale && ["fr", "en", "ar"].includes(user.locale)) {
-      void setLocale(user.locale, { syncRemote: false });
+      setLocale(user.locale, { syncRemote: false });
     }
     if (user.themePreference && ["dark", "light"].includes(user.themePreference)) {
-      void setTheme(user.themePreference, { syncRemote: false });
+      setTheme(user.themePreference, { syncRemote: false });
     }
   }, [token, user, setLocale, setTheme]);
 

@@ -97,10 +97,10 @@ export default function Dashboard() {
 
       <div className="stats-grid">
         {isLoadingOrders || isLoadingChats ? (
-          [1, 2, 3].map(i => <Skeleton key={i} style={{ height: '176px', borderRadius: '24px' }} />)
+          [1, 2, 3].map(i => <Skeleton key={`skeleton-${i}`} style={{ height: '176px', borderRadius: '24px' }} />)
         ) : (
-          stats.map((stat, i) => (
-            <StatCard key={i} {...stat} />
+          stats.map((stat) => (
+            <StatCard key={stat.title} {...stat} />
           ))
         )}
       </div>
@@ -169,8 +169,8 @@ export default function Dashboard() {
               { label: t("dashboard.completedOrders"), value: completedOrders, color: "primary" },
               { label: t("dashboard.avgOrderValue"), value: `$${avgOrderValue.toFixed(2)}`, color: "secondary" },
               { label: t("dashboard.conversations"), value: conversations?.length || 0, color: "default" },
-            ].map((insight, i) => (
-              <div key={i} className="insight-item">
+            ].map((insight) => (
+              <div key={insight.label} className="insight-item">
                 <span className="insight-label">{insight.label}</span>
                 <span className={`insight-value ${insight.color}`}>{insight.value}</span>
               </div>

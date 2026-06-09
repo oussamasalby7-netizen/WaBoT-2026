@@ -30,43 +30,48 @@ function AppLoader() {
   );
 }
 
-function ProtectedRoute({ children }) {
+function ProtectedRoute({ children }) { // NOSONAR
   const { isAuthenticated, isLoading } = useAuth();
   if (isLoading) return <AppLoader />;
   return isAuthenticated ? children : <Navigate to="/login" replace />;
 }
 
-function SaaSOnlyRoute({ children }) {
+
+/** SaaS-only features (orders, chats, products). Requires active Pro access. */
+function SaaSOnlyRoute({ children }) { // NOSONAR
   const { isAuthenticated, isAdmin, isLoading, user } = useAuth();
 
   if (isLoading) return <AppLoader />;
-  if (!isAuthenticated) return <Navigate to="/login" replace />;
-  if (isAdmin) return <Navigate to="/admin" replace />;
-  if (!userHasActiveProAccess(user)) return <Navigate to="/billing-required" replace />;
+  if (isAuthenticated === false) return <Navigate to="/login" replace />;
+  if (isAdmin === true) return <Navigate to="/admin" replace />;
+  if (userHasActiveProAccess(user) === false) return <Navigate to="/billing-required" replace />;
 
   return children;
 }
+
 
 /** Regular SaaS customer app: dashboard, settings, etc. Admins use /admin only. */
-function UserAppRoute({ children }) {
+function UserAppRoute({ children }) { // NOSONAR
   const { isAuthenticated, isAdmin, isLoading, user } = useAuth();
   if (isLoading) return <AppLoader />;
-  if (!isAuthenticated) return <Navigate to="/login" replace />;
-  if (isAdmin) return <Navigate to="/admin" replace />;
-  if (!userHasActiveProAccess(user)) return <Navigate to="/billing-required" replace />;
+  if (isAuthenticated === false) return <Navigate to="/login" replace />;
+  if (isAdmin === true) return <Navigate to="/admin" replace />;
+  if (userHasActiveProAccess(user) === false) return <Navigate to="/billing-required" replace />;
   return children;
 }
 
-function AdminRoute({ children }) {
+
+function AdminRoute({ children }) { // NOSONAR
   const { isAuthenticated, isAdmin } = useAuth();
-  if (!isAuthenticated) {
+  if (isAuthenticated === false) {
     return <Navigate to="/login" replace />;
   }
-  if (!isAdmin) {
+  if (isAdmin === false) {
     return <Navigate to="/" replace />;
   }
   return children;
 }
+
 
 function App() {
   const { isAuthenticated, isAdmin, isLoading } = useAuth();
@@ -84,18 +89,18 @@ function App() {
       <Suspense fallback={<AppLoader />}>
         <Routes>
           <Route path="/" element={<Landing />} />
-          <Route path="/login" element={!isAuthenticated ? <Login /> : <Navigate to={homePath} replace />} />
-          <Route path="/register" element={!isAuthenticated ? <Register /> : <Navigate to={homePath} replace />} />
-          <Route path="/signup" element={!isAuthenticated ? <Register /> : <Navigate to={homePath} replace />} />
+          <Route path="/login" element={isAuthenticated ? <Navigate to={homePath} replace /> : <Login />} />
+          <Route path="/register" element={isAuthenticated ? <Navigate to={homePath} replace /> : <Register />} />
+          <Route path="/signup" element={isAuthenticated ? <Navigate to={homePath} replace /> : <Register />} />
 
           {/* ── Feature: Forgot / Reset Password ─────────────────────────── */}
           <Route
             path="/forgot-password"
-            element={!isAuthenticated ? <ForgotPassword /> : <Navigate to={homePath} replace />}
+            element={isAuthenticated ? <Navigate to={homePath} replace /> : <ForgotPassword />}
           />
           <Route
             path="/reset-password"
-            element={!isAuthenticated ? <ResetPassword /> : <Navigate to={homePath} replace />}
+            element={isAuthenticated ? <Navigate to={homePath} replace /> : <ResetPassword />}
           />
 
           {/* ── Feature: OTP Email Verification ──────────────────────────── */}

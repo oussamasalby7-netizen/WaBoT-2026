@@ -193,7 +193,7 @@ export default function VerifyOtp() {
               <div className="otp-inputs" onPaste={handlePaste}>
                 {digits.map((digit, index) => (
                   <input
-                    key={index}
+                    key={`digit-${index}`}
                     ref={(el) => (inputRefs.current[index] = el)}
                     type="text"
                     inputMode="numeric"

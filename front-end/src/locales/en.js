@@ -63,6 +63,7 @@ export default {
     passwordResetSuccess: "Your password has been updated. You will be redirected to the login page automatically.",
     remembered: "Remembered it?",
     blockedAccount: "Your account has been suspended by administration. Please contact support to resolve this issue.",
+    passwordPolicy: "Must be ≥8 chars and include uppercase, lowercase, number & special character.",
   },
   topbar: {
     adminSubtitle: "— users and subscriptions",
@@ -330,13 +331,90 @@ export default {
     send: "Send",
   },
   landing: {
-    heroBadge: "WaBOT 2.0 is here",
-    heroTitle: "Automate WhatsApp Sales with AI",
-    heroSubtitle: "AI replies, confirms orders, and manages customers automatically.",
-    startFree: "Get Started",
+    /* Navbar */
+    heroBadge: "AI-Powered WhatsApp Automation",
+    heroTitle: "Your AI Sales Assistant\nLives on WhatsApp",
+    heroSubtitle: "WaBoT is the smartest WhatsApp AI bot for business. It replies to customers, takes orders, and handles support — 24 hours a day, 7 days a week. No extra staff needed.",
+    startFree: "Get Started Free",
     goDashboard: "Go to Dashboard",
     signup: "Sign Up",
     login: "Login",
     dashboard: "Dashboard",
+
+    /* Stats Strip */
+    stat1Value: "98%",
+    stat1Label: "Automation Success Rate",
+    stat2Value: "24/7",
+    stat2Label: "AI Support, Always On",
+    stat3Value: "10K+",
+    stat3Label: "Messages Handled Daily",
+    stat4Value: "< 2s",
+    stat4Label: "Average AI Response Time",
+
+    /* Features Section */
+    featuresTag: "What WaBoT Does",
+    featuresTitle: "Everything Your Business Needs on WhatsApp",
+    featuresSubtitle: "One AI assistant that handles sales, support, and orders — so you can focus on growing.",
+    feat1Title: "Instant AI Replies",
+    feat1Desc: "WaBoT answers customer questions instantly, any time of day. No delays, no missed messages — just fast, accurate replies that feel human.",
+    feat2Title: "Automated Order Handling",
+    feat2Desc: "Customers place orders directly in WhatsApp. WaBoT collects all the details, confirms the order, and logs it to your dashboard automatically.",
+    feat3Title: "Smart Sales Assistant",
+    feat3Desc: "WaBoT recommends products, handles objections, and guides customers to checkout — all through a natural WhatsApp conversation.",
+    feat4Title: "Fast & Simple Setup",
+    feat4Desc: "Connect your WhatsApp Business account, add your products, and go live in minutes. No coding or technical knowledge required.",
+
+    /* Use Cases */
+    usecasesTag: "Built for Your Industry",
+    usecasesTitle: "Which Type of Business Are You?",
+    usecasesSubtitle: "WaBoT adapts to any business that uses WhatsApp to talk to customers.",
+    uc1Title: "E-Commerce Stores",
+    uc1Desc: "Handle product questions, process orders, and send tracking updates automatically.",
+    uc2Title: "Clothing & Fashion",
+    uc2Desc: "Let customers browse sizes, colors, and availability via WhatsApp chat.",
+    uc3Title: "Restaurants & Cafés",
+    uc3Desc: "Take orders, share menus, and confirm reservations without lifting a finger.",
+    uc4Title: "Delivery Services",
+    uc4Desc: "Automate order intake, provide real-time delivery updates, and reduce call volume.",
+    uc5Title: "Customer Support",
+    uc5Desc: "Resolve common queries instantly, escalate to humans when needed — zero wait times.",
+
+    /* How It Works */
+    howTag: "Simple 3-Step Setup",
+    howTitle: "Up and Running in Minutes",
+    howSubtitle: "Getting started with WaBoT takes less time than making a cup of coffee.",
+    how1Step: "01",
+    how1Title: "Connect WhatsApp",
+    how1Desc: "Link your WhatsApp Business number through our secure, guided setup. No technical skills needed.",
+    how2Step: "02",
+    how2Title: "Configure Your AI",
+    how2Desc: "Add your products, set your business hours, and customize how the AI talks to your customers.",
+    how3Step: "03",
+    how3Title: "Go Live & Grow",
+    how3Desc: "Start receiving automated replies and orders. Watch your dashboard fill up with sales data.",
+
+    /* Benefits */
+    benefitsTag: "Why Businesses Choose WaBoT",
+    benefitsTitle: "Stop Losing Sales to Slow Replies",
+    benefitsSubtitle: "Every unanswered message is a missed sale. WaBoT makes sure that never happens again.",
+    ben1Title: "Save Hours Every Day",
+    ben1Desc: "Stop spending hours answering the same questions. WaBoT handles repetitive messages instantly, freeing your team for what matters.",
+    ben2Title: "Increase Sales Revenue",
+    ben2Desc: "Respond to every inquiry the moment it arrives. Never miss a sale because you were busy, sleeping, or off-hours.",
+    ben3Title: "Cut Support Workload by 80%",
+    ben3Desc: "WaBoT resolves the most common customer queries automatically. Your support team only handles the complex ones.",
+
+    /* CTA Section */
+    ctaTitle: "Ready to Automate Your WhatsApp Business?",
+    ctaSubtitle: "Join hundreds of businesses already using WaBoT to save time, close more sales, and deliver better customer experiences.",
+    ctaButton: "Start for Free Today",
+    ctaSecondary: "Already have an account? Login",
+
+    /* Footer */
+    footerTagline: "The AI WhatsApp bot built for business growth.",
+    footerCopy: "© 2025 WaBoT. All rights reserved.",
+    footerPrivacy: "Privacy Policy",
+    footerTerms: "Terms of Service",
   },
 };
+

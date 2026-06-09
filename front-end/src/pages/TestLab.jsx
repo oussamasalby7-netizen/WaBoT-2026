@@ -9,12 +9,12 @@ import "../styles/testlab.css";
 function typewriter(text, set, speed = 12) {
   let i = 0;
   set("");
-  const id = window.setInterval(() => {
+  const id = setInterval(() => {
     i += 1;
     set(text.slice(0, i));
-    if (i >= text.length) window.clearInterval(id);
+    if (i >= text.length) clearInterval(id);
   }, speed);
-  return () => window.clearInterval(id);
+  return () => clearInterval(id);
 }
 
 export default function TestLab() {

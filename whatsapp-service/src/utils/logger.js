@@ -6,7 +6,7 @@
  */
 
 const { createLogger, format, transports } = require('winston');
-const path = require('path');
+const path = require('node:path');
 const config = require('../config/env');
 
 const LOG_DIR = path.resolve(__dirname, '../../logs');

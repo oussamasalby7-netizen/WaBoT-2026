@@ -5,7 +5,7 @@
  * This ensures only the Laravel backend can communicate with this service.
  */
 
-const crypto = require('crypto');
+const crypto = require('node:crypto');
 const config = require('../config/env');
 const logger = require('../utils/logger');
 

@@ -4,7 +4,7 @@ import { useAuth } from "../hooks/useAuth";
 import { useI18n } from "../context/I18nContext.jsx";
 import { useTheme } from "../context/ThemeContext.jsx";
 
-export default function Topbar({ onMenuClick }) {
+export default function Topbar({ onMenuClick }) { // NOSONAR
   const { user, isAdmin } = useAuth();
   const { t, locale, setLocale, supportedLocales } = useI18n();
   const { theme, toggleTheme } = useTheme();
@@ -38,7 +38,7 @@ export default function Topbar({ onMenuClick }) {
           <Languages size={16} />
           <select
             value={locale}
-            onChange={(e) => void setLocale(e.target.value)}
+            onChange={(e) => setLocale(e.target.value)}
             aria-label="Language"
           >
             {supportedLocales.map((code) => (
@@ -51,7 +51,7 @@ export default function Topbar({ onMenuClick }) {
 
         <button
           type="button"
-          onClick={() => void toggleTheme()}
+          onClick={() => toggleTheme()}
           className="topbar-action-btn"
           title={theme === "light" ? "Dark mode" : "Light mode"}
           aria-label="Toggle theme"

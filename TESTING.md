@@ -67,8 +67,8 @@ It creates:
 - Support messages
 
 Admin credentials in test DB:
-- Email: `admin@test.local`
-- Password: `password123`
+- Email: `ejjoudmohamed0@gmail.com`
+- Password: `Mohamed##EJJOUD1919`
 
 ---
 

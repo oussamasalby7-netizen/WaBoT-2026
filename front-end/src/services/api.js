@@ -53,14 +53,14 @@ api.interceptors.response.use(
       setToken(null);
       if (unauthorizedHandler) {
         unauthorizedHandler();
-      } else if (window.location.pathname !== "/login") {
-        window.location.href = "/login";
+      } else if (globalThis.location.pathname !== "/login") {
+        globalThis.location.href = "/login";
       }
     }
 
     if (status === 403 && data?.code === "subscription_required") {
-      if (window.location.pathname !== "/billing-required" && window.location.pathname !== "/login") {
-        window.location.href = "/billing-required";
+      if (globalThis.location.pathname !== "/billing-required" && globalThis.location.pathname !== "/login") {
+        globalThis.location.href = "/billing-required";
       }
     }
 

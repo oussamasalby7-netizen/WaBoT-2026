@@ -6,7 +6,7 @@
  * preventing the service from running in an invalid state.
  */
 
-const path = require('path');
+const path = require('node:path');
 require('dotenv').config({ path: path.resolve(__dirname, '../../.env') });
 
 function parseWaVersion(value) {
@@ -22,7 +22,7 @@ function parseWaVersion(value) {
 }
 
 const config = {
-    port: parseInt(process.env.PORT, 10) || 3001,
+    port: Number.parseInt(process.env.PORT, 10) || 3001,
     bindHost: process.env.BIND_HOST || '127.0.0.1',
     laravelApiUrl: process.env.LARAVEL_API_URL || 'http://127.0.0.1:8000/api',
     serviceSecret: process.env.SERVICE_SECRET || '',
